@@ -15,3 +15,5 @@ Website for EMCH Foundation
 - [ ] Static Aux page with info 
 - [ ] Page with board members pictures/names
 - [ ] Allow editing of board members picture/names 
+- [ ] Admin page to change pictures 
+- [ ] PDF upload and download and storage
