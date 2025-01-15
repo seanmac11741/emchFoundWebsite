@@ -4,7 +4,7 @@ Website for EMCH Foundation
 ## Design reqs 
 
 ## Todo list 
-- [ ] Create bare bones website 
+- [x] Create bare bones website 
 - [ ] Aquire good pictures 
 - [ ] Deploy to Firebase
 - [ ] Add user auth and login 
