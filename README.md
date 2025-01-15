@@ -1,12 +1,27 @@
 # emchFoundWebsite
 Website for EMCH Foundation
+Firebase url: https://emchfoundation.web.app/
 
 ## Design reqs 
+
+
+## To run in dev with bun: 
+```
+bun build src/app.js --outdir ./public --watch
+#then spool up the ./public/index.html file with LiveServer
+```
+## Deploy to firebase: 
+```
+#Run the build command
+bun build src/app.js --outdir ./public
+firebase deploy
+
+```
 
 ## Todo list 
 - [x] Create bare bones website 
 - [ ] Aquire good pictures 
-- [ ] Deploy to Firebase
+- [x] Deploy to Firebase
 - [ ] Add user auth and login 
 - [ ] Create blog page 
 - [ ] Blog entries can be create/read/update/deleted
