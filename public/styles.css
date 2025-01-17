@@ -2,10 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
 :root {
-    --color-primary: hsl(97, 50%, 90%);
-    --color-secondary: hsl(97, 50%, 10%);
-    --color-tertiary: hsl(157, 80%, 20%);
-    --color-accent: hsl(37, 80%, 20%);
+    --color-primary: hsl(41, 81%, 56%);
+    --color-secondary: hsl(359, 48%, 17%);
+    --color-tertiary: hsl(341, 80%, 20%);
+    --color-accent: hsl(0, 0%, 95%);
     --ff: "Montserrat", sans-serif;
     --ff2: "Fira Code", monospace;
     --h1: bold max(36px, 4vw) / max(48px, 5vw) var(--ff);
@@ -22,10 +22,10 @@
 
 
 .dark {
-    --color-primary: hsl(97, 50%, 10%);
-    --color-secondary: hsl(97, 50%, 90%);
-    --color-tertiary: hsl(157, 80%, 80%);
-    --color-accent: hsl(37, 80%, 80%);
+    --color-primary: hsl(359, 48%, 17%);
+    --color-secondary: hsl(41, 81%, 56%);
+    --color-tertiary: hsl(33, 33%, 25%);
+    --color-accent: hsl(37, 80%, 20%);
 }
 
 .subtext {
@@ -142,17 +142,41 @@ svg:hover {
     flex: 1;
 }
 
-
-
-.btn {
-    display: inline-block;
-    color: var(--color-primary);
-
-    background: var(--color-accent);
-    border-radius: 4px;
-    margin: 8px 8px 8px 0px;
+/* buttons */
+button {
+    cursor: pointer;
+    background: var(--color-primary);
+    text-decoration: none;
+    font: var(--links);
     padding: 12px 20px;
-    border: solid 2px var(--color-accent);
+    border-radius: 8px;
+    color: var(--color-secondary);
+    transition: var(--transition);
+}
+
+button:hover {
+    transition: var(--transition);
+}
+
+/* crispy */
+.crispy {
+    border: solid 1px var(--color-secondary);
+    box-shadow: 0 2px var(--color-secondary);
+}
+
+.crispy:hover {
+    box-shadow: 0 4px var(--color-secondary);
+}
+
+.crispy-fill {
+    background: var(--color-secondary2);
+    color: var(--color-secondary);
+    border: solid 1px var(--color-secondary);
+    box-shadow: 0 2px var(--color-secondary);
+}
+
+.crispy-fill:hover {
+    box-shadow: 0 4px var(--color-secondary);
 }
 
 .secondary {
@@ -174,5 +198,79 @@ span {
     .c2 {
         width: 90%;
         padding: 20px;
+    }
+}
+
+/* navbar stuff  */
+.navbar {
+    margin: 0px auto;
+    display: flex;
+    max-width: 1080px;
+    height: 10vh;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-primary);
+    padding: 10px 20px;
+    color: var(--color-secondary);
+    gap: 20px;
+}
+
+.navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+.navbar ul li {
+    position: relative;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: var(--color-secondary);
+    padding: 8px 15px;
+    transition: background-color 0.3s;
+}
+
+.navbar ul li a:hover {
+    background-color: var(--color-tertiary);
+    color: var(--color-primary);
+    border-radius: 5px;
+}
+
+.navbar .menu-toggle {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .navbar ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--color-primary);
+        width: 100%;
+        z-index: 1;
+        padding: 10px 0;
+    }
+
+    .navbar ul.active {
+        display: flex;
+    }
+
+    .navbar ul li {
+        text-align: center;
+    }
+
+    .navbar .menu-toggle {
+        display: block;
     }
 }

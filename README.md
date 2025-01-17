@@ -21,6 +21,7 @@ firebase deploy
 ## Todo list 
 - [x] Create bare bones website 
 - [ ] Aquire good pictures 
+- [x] Create good navbar layout
 - [x] Deploy to Firebase
 - [ ] Add user auth and login 
 - [ ] Create blog page 

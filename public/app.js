@@ -2438,3 +2438,8 @@ var firebaseConfig = {
 };
 var app6 = initializeApp(firebaseConfig);
 var analytics3 = getAnalytics(app6);
+var menuToggle = document.querySelector(".menu-toggle");
+var navMenu = document.querySelector(".navbar ul");
+menuToggle.addEventListener("click", () => {
+  navMenu.classList.toggle("active");
+});
