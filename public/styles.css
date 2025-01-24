@@ -85,6 +85,20 @@ body {
     gap: 20px;
 }
 
+.titleSection {
+    margin: 0px auto;
+    max-width: 1080px;
+    height: 10vh;
+    scroll-snap-align: start;
+
+    width: 90%;
+    max-width: 1080px;
+    margin: 40px auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
 .mode {
     display: flex;
     gap: 8px;
@@ -110,6 +124,13 @@ h2 {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
+    align-items: center;
+}
+
+.row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: nowrap;
     align-items: center;
 }
 
@@ -221,7 +242,7 @@ span {
     margin: 0px auto;
     display: flex;
     max-width: 1080px;
-    height: 10vh;
+    height: 8vh;
     justify-content: space-between;
     align-items: center;
     background-color: var(--color-primary);
@@ -253,7 +274,7 @@ span {
 }
 
 .navbar ul li a:hover {
-    background-color: var(--color-tertiary);
+    background-color: var(--color-secondary);
     color: var(--color-primary);
     border-radius: 5px;
 }
