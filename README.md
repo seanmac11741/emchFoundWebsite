@@ -7,8 +7,12 @@ Firebase url: https://emchfoundation.web.app/
 
 ## To run in dev with bun: 
 ```
-bun build src/app.js --outdir ./public --watch
-#then spool up the ./public/index.html file with LiveServer
+#bun build is not working, use webpack
+bun build src/app.js --outdir ./public --watch 
+#then spool up the ./public/index.html file with LiveServer 
+# or launch firebase version for emulators 
+bun run build
+firebase serve 
 ```
 ## Deploy to firebase: 
 ```

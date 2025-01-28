@@ -1,0 +1,78 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>EMCH Foundation</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images//favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images//favicon-16x16.png">
+    <link rel="manifest" href="./images//site.webmanifest">
+</head>
+
+<body>
+    <header>
+        <img class="logo" src="images/emchf-logo-redo-white-copy.png" alt="emchf-logo-redo-white-copy">
+        <nav class="navbar">
+            <!-- <div class="logo">EMCH Foundation</div> -->
+            <span class="menu-toggle">&#9776;</span>
+            <ul>
+                <!-- todo get these to be filled in for proper page -->
+                <li><a href="#">Home</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="fundraiser.html">Fundraiser</a></li>
+                <li><a href="district.html">District</a></li>
+                <li><a href="auxillary.html">Auxillary</a></li>
+            </ul>
+        </nav>
+        <svg onclick="dark()" id="dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+            <path
+                d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z" />
+        </svg>
+
+
+    </header>
+
+    <div class="section col">
+
+        <h1>East Morgan County Hospital Foundation</h1>
+        <p>EMCH Foundation exists to provide funds and support for capital and program needs at East Morgan County
+            Hospital. Several successful campaigns have been conducted to meet these needs. The Foundation also supports
+            the education of medical personnel throughout the hospital and clinics through scholarship opportunities.
+        </p>
+        <a href="https://www.paypal.com/donate?token=hB1YXAlCA-DjGLU4l9mgTpeIRDc4D1rB2wS3FqnqCZ2DjAnYaw0g_rCCyKTKI_hHh4ooRLajSBoinb3Z"
+            target="_blank">
+            <button class="crispy-fill">Donate</button>
+        </a>
+
+    </div>
+
+
+    <section id="whenSignedOut">
+        <button id="signInBtn">Sign in with Google</button>
+    </section>
+
+    <section id="whenSignedIn" hidden="true">
+        <div id="userDetails"></div>
+        <button id="signOutBtn">Sign Out</button>
+    </section>
+
+    <footer>
+        <div class="section col">
+            <div class="social-icons">
+                <a href="https://www.facebook.com/EMCHFoundation/">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path
+                            d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256C0 376 82.7 476.8 194.2 504.5V334.2H141.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287V510.1C413.8 494.8 512 386.9 512 256h0z" />
+                    </svg>
+                </a>
+                <!-- <a href="#">PUT SVG COPY/PAST FROM fontawesome.com HERE</a> -->
+            </div>
+        </div>
+    </footer>
+    <script src="app.js" defer></script>
+    <script src="dark.js" defer></script>
+</body>
+
+</html>
