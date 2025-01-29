@@ -34,24 +34,29 @@
 
     </header>
 
-    <h1>Admin Dashboard</h1>
+    <div class="section col">
 
-    <h2>Upload Image</h2>
-    <input type="file" id="uploadImage">
-    <button id="uploadBtn">Upload</button>
+        <h1>Admin Dashboard</h1>
 
-    <h2>Blog Posts</h2>
-    <textarea id="blogContent"></textarea>
-    <button id="saveBlog">Save Post</button>
+        <h2>Upload Image</h2>
+        <input type="file" id="uploadImage">
+        <button id="uploadBtn">Upload</button>
 
-    <section id="whenSignedOut">
-        <button id="signInBtn">Sign in with Google</button>
-    </section>
+        <h2>Blog Posts</h2>
+        <textarea id="blogContent"></textarea>
+        <button id="saveBlog">Save Post</button>
+    </div>
+    <div class="section col">
+        <section id="whenSignedOut">
+            <button id="signInBtn">Sign in with Google</button>
+        </section>
 
-    <section id="whenSignedIn" hidden="true">
-        <div id="userDetails"></div>
-        <button id="signOutBtn">Sign Out</button>
-    </section>
+        <section id="whenSignedIn" hidden="true">
+            <div id="userDetails"></div>
+            <button id="signOutBtn">Sign Out</button>
+        </section>
+
+    </div>
 
     <footer>
         <div class="section col">
