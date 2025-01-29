@@ -19,7 +19,7 @@
             <span class="menu-toggle">&#9776;</span>
             <ul>
                 <!-- todo get these to be filled in for proper page -->
-                <li><a href="#">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="events.html">Events</a></li>
                 <li><a href="fundraiser.html">Fundraiser</a></li>
                 <li><a href="district.html">District</a></li>
@@ -34,24 +34,15 @@
 
     </header>
 
-    <div class="section col">
+    <h1>Admin Dashboard</h1>
 
-        <form id="loginForm" action="/submit_login" method="post">
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username" required><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" required><br>
-            <button id="emailLoginBut" type="submit">Login</button>
-        </form>
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <p>Invalid email or password. Please try again.</p>
-                <button onclick="hideModal()">Close</button>
-            </div>
-        </div>
+    <h2>Upload Image</h2>
+    <input type="file" id="uploadImage">
+    <button id="uploadBtn">Upload</button>
 
-    </div>
-
+    <h2>Blog Posts</h2>
+    <textarea id="blogContent"></textarea>
+    <button id="saveBlog">Save Post</button>
 
     <section id="whenSignedOut">
         <button id="signInBtn">Sign in with Google</button>

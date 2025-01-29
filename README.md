@@ -11,7 +11,8 @@ Firebase url: https://emchfoundation.web.app/
 bun build src/app.js --outdir ./public --watch 
 #then spool up the ./public/index.html file with LiveServer 
 # or launch firebase version for emulators 
-bun run build
+#Run build in watch mode: https://firebase.google.com/docs/web/module-bundling
+bun run build --watch
 firebase serve 
 ```
 ## Deploy to firebase: 
