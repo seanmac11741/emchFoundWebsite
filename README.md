@@ -23,6 +23,9 @@ firebase deploy
 
 ```
 
+## Notes 
+* Square donation link for Foundation: https://square.link/u/jaG4W2Uo 
+
 ## Todo list 
 - [x] Create bare bones website 
 - [ ] Aquire good pictures 
@@ -33,8 +36,12 @@ firebase deploy
 - [ ] Blog entries can be create/read/update/deleted
 - [ ] Blog entries can have embedded facebook albums
 - [x] Add link to Paypal(Square?) site for donating 
-- [ ] Static Aux page with info 
+- [ ] replace paypal with Square link
+- [ ] Embed square link/qr code 
+- [x] Static Aux page with info 
+- [ ] Able to edit Aux page images and words on admin page 
 - [ ] Page with board members pictures/names
 - [ ] Allow editing of board members picture/names 
 - [x] Admin page to change pictures 
 - [ ] PDF upload and download and storage
+- [ ] Add 2fa for non-google users 
