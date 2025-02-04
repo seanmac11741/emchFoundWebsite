@@ -33,6 +33,7 @@ firebase deploy
 - [x] Deploy to Firebase
 - [x] Add user auth and login 
 - [x] Create blog page 
+- [ ] Make the home page a lot better. Big picture, fancy scroll animations
 - [ ] Blog entries can be create/read/update/deleted
 - [ ] Blog entries can have embedded facebook albums
 - [x] Add link to Paypal(Square?) site for donating 
@@ -45,3 +46,5 @@ firebase deploy
 - [x] Admin page to change pictures 
 - [ ] PDF upload and download and storage
 - [ ] Add 2fa for non-google users 
+- [ ] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
+- [ ] Lookup firebaseui for web and maybe use for login page
