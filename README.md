@@ -25,6 +25,10 @@ firebase deploy
 
 ## Notes 
 * Square donation link for Foundation: https://square.link/u/jaG4W2Uo 
+* cors.json is for downloading in the browser for the PDF files, I followed this documentation to get it working with gutil: https://firebase.google.com/docs/storage/web/download-files 
+```bash 
+gsutil cors set cors.json gs://emchfoundation.firebasestorage.app
+```
 
 ## Todo list 
 - [x] Create bare bones website 
@@ -37,14 +41,16 @@ firebase deploy
 - [ ] Blog entries can be create/read/update/deleted
 - [ ] Blog entries can have embedded facebook albums
 - [x] Add link to Paypal(Square?) site for donating 
-- [ ] replace paypal with Square link
+- [x] replace paypal with Square link
 - [ ] Embed square link/qr code 
 - [x] Static Aux page with info 
 - [ ] Able to edit Aux page images and words on admin page 
 - [ ] Page with board members pictures/names
 - [ ] Allow editing of board members picture/names 
 - [x] Admin page to change pictures 
-- [ ] PDF upload and download and storage
+- [x] PDF Download working
+- [ ] Read and understand security here: https://firebase.google.com/docs/storage/security/rules-conditions#public 
+- [x] PDF upload on admin page to change files
 - [ ] Add 2fa for non-google users 
 - [ ] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
 - [ ] Lookup firebaseui for web and maybe use for login page

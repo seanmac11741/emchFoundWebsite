@@ -60,9 +60,13 @@
 
     </div>
     <div class="section row">
-        <button class="crispy-fill">Download Board of Director's bylaws</button>
-        <button class="crispy-fill">Download District Transparency Notice</button>
-        <button class="crispy-fill">Download Government Contact Information</button>
+        <!-- TODO: this is hardcoded file names... probably put it in firestore or something -->
+        <button onclick="downloadFile('District-bylaws.pdf')" class="crispy-fill">Download Board
+            of Director's bylaws</button>
+        <button onclick="downloadFile('Transparency-Notice.pdf')" class="crispy-fill">Download District Transparency
+            Notice</button>
+        <a href="https://dola.colorado.gov/dlg_lgis_ui_efile/?id=44002&jfwid=qx5NCG6flMv2AchOKJnEytghdO65SdqY9tRCOBEQ%3A0"
+            target="_blank"><button class="crispy-fill">Download Government Contact Information</button></a>
     </div>
 
     <footer>

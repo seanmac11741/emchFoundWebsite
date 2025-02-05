@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, getDoc, collection } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -22,7 +22,7 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
-const storage = getStorage(app);
+const storage = getStorage();
 
 console.log("Firebase initialized:", app);
 
@@ -116,7 +116,23 @@ async function checkAdminAccess(user) {
     }
 }
 
+window.downloadFile = function (fileName) {
+    const fileRef = ref(storage, 'pdfDownloads/' + fileName);
 
+    getDownloadURL(fileRef).then((url) => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        // Open in a new tab
+        link.target = "_blank";
+        // Append to body or a specific element if you want the download link available elsewhere on your page.
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }).catch(console.error);
+}
+
+// login pop up things 
 window.showModal = function () {
     document.getElementById('myModal').style.display = "block";
 }
