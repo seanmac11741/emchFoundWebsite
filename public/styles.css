@@ -72,9 +72,9 @@ body {
 } */
 
 .section {
-    margin: 0px auto;
+    margin: 0 auto;
     max-width: 1080px;
-    height: 50vh;
+    min-height: 50vh;
     scroll-snap-align: start;
 
     width: 90%;
