@@ -45,8 +45,8 @@ gsutil cors set cors.json gs://emchfoundation.firebasestorage.app
 - [ ] Embed square link/qr code 
 - [x] Static Aux page with info 
 - [ ] Able to edit Aux page images and words on admin page 
-- [ ] Page with board members pictures/names
-- [ ] Allow editing of board members picture/names 
+- [x] Page with board members pictures/names sourced from firestore/db
+- [ ] Admin page can add/update/remove board members pictures/names 
 - [x] Admin page to change pictures 
 - [x] PDF Download working
 - [ ] Read and understand security here: https://firebase.google.com/docs/storage/security/rules-conditions#public 

@@ -139,6 +139,35 @@ h2 {
     min-width: 320px;
 }
 
+.boardMemCards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.card {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border-radius: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.card:hover {
+    scale: 1.01;
+    box-shadow: var(--shadow);
+}
+
+.card-img {
+    height: 300px;
+}
+
 a {
     font: 600 1rem/1em var(--ff);
     color: var(--color-accent);

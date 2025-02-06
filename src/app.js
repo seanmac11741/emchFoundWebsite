@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, collection } from "firebase/firestore";
+import { getFirestore, doc, getDoc, collection, query, getDocs } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 // Firebase configuration
@@ -139,6 +139,52 @@ window.showModal = function () {
 
 window.hideModal = function () {
     document.getElementById('myModal').style.display = "none";
+}
+
+
+//only load these on district page
+if (window.location.pathname.includes("district.html")) {
+    // Load board members from Firestore
+    console.log('Loading board members from Firestore');
+    window.onload = async function () {
+        const querySnapshot = await getDocs(collection(db, 'boardMembers'));
+        querySnapshot.forEach((doc) => {
+            const boardMember = doc.data();
+            console.log(boardMember);
+            // Add the board member to a card element in the div with id "boardMemCards"
+            // Add the board member to a card element in the div with id  "boardMemCards"
+            const cardElement = document.getElementById('boardMemCards');
+            const card = document.createElement('div');
+            card.className = 'card';
+            //Set board member img 
+            const imgElement = document.createElement('img');
+            //get image from firebase storage 
+            const imgRef = ref(storage, 'images/boardMembers/' + boardMember.imageName);
+            getDownloadURL(imgRef).then((url) => {
+                imgElement.src = url;
+            }).catch((error) => {
+                console.error("Error getting download URL:", error);
+            });
+            imgElement.alt = boardMember.imageName;
+            imgElement.className = 'card-img';
+            card.appendChild(imgElement);
+
+            //Set board member name
+            const nameElement = document.createElement('h2');
+            nameElement.textContent = boardMember.Name;
+            card.appendChild(nameElement);
+            //Set board member title
+            const Title = document.createElement('h3');
+            Title.textContent = boardMember.Title;
+            card.appendChild(Title);
+            //Set board member dates
+            const dates = document.createElement('p');
+            dates.textContent = boardMember.dates;
+            card.appendChild(dates);
+            cardElement.appendChild(card);
+        });
+    }
+
 }
 
 //only load these on admin or login pages
