@@ -2,8 +2,8 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, collection, query, getDocs } from "firebase/firestore";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { getFirestore, doc, getDoc, collection, query, getDocs, addDoc } from "firebase/firestore";
+import { uploadBytesResumable, getStorage, ref, getDownloadURL } from "firebase/storage";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -42,15 +42,18 @@ const signOutBtn = document.getElementById('signOutBtn');
 const userDetails = document.getElementById('userDetails');
 
 // Handle Auth State Changes. called on page load 
+let gUser = null;
 onAuthStateChanged(auth, async (user) => {
     if (user) {
+        gUser = user;
         // If on the admin page, check admin access
         if (window.location.pathname.includes("admin.html")) {
             checkAdminAccess(user);
         }
         whenSignedIn.hidden = false;
         whenSignedOut.hidden = true;
-        userDetails.innerHTML = `<h3>Hello ${user.displayName}!</h3> <p>User ID: ${user.uid}</p> <p>Click <a href="admin.html">here</a> to access admin page</p>`;
+        userDetails.innerHTML = `<h3>Hello ${user.displayName}!</h3><p>Click <a href="admin.html">here</a> to access admin page</p>`;
+        console.log(`User ID: ${user.uid}`);
     } else {
         // Redirect unauthorized users trying to access the admin page
         if (window.location.pathname.includes("admin.html")) {
@@ -171,12 +174,12 @@ if (window.location.pathname.includes("district.html")) {
 
             //Set board member name
             const nameElement = document.createElement('h2');
-            nameElement.textContent = boardMember.Name;
+            nameElement.textContent = boardMember.name;
             card.appendChild(nameElement);
             //Set board member title
-            const Title = document.createElement('h3');
-            Title.textContent = boardMember.Title;
-            card.appendChild(Title);
+            const title = document.createElement('h3');
+            title.textContent = boardMember.title;
+            card.appendChild(title);
             //Set board member dates
             const dates = document.createElement('p');
             dates.textContent = boardMember.dates;
@@ -227,19 +230,88 @@ if (window.location.pathname.includes("admin.html") || window.location.pathname.
 
 //only admin page stuff here 
 if (window.location.pathname.includes("admin.html")) {
-    document.getElementById("uploadBtn").addEventListener("click", () => {
-        const file = document.getElementById("uploadImage").files[0];
-        if (!file) return alert("No file selected");
+    //add function to call when button: submitNewBoardMember is clicked to get the form data 
+    document.addEventListener('DOMContentLoaded', function () {
 
-        const storageRef = storage.ref("images/" + file.name);
-        storageRef.put(file).then(() => alert("File uploaded!"));
+        document.getElementById('submitNewBoardMember').onclick = async function (event) {
+            console.log("submitNewBoardMember clicked");
+            event.preventDefault();  // Preventing the default form submission behaviour
+            var formData = {
+                name: document.getElementById("name").value,
+                title: document.getElementById("title").value,
+                dates: document.getElementById("dates").value,
+            };
+            if (document.getElementById("imageUpload")) {
+                formData.imageName = document.getElementById("imageUpload").files[0].name;
+            }
+
+            let validate = await validateBoardMember(formData);
+            if (!validate) {
+                console.log('outer call to showmodal');
+                showModal();
+            } else { //if validation passes, continue to insert into firestore 
+                //check if admin 
+                checkAdminAccess(gUser);
+                //write to firestore
+                console.log('Writing doc to firestore...');
+                try {
+                    await addDoc(collection(db, "boardMembers"), formData)
+                        .then((docRef) => {
+                            console.log("Document written with ID: ", docRef.id);
+                        });
+                    console.log('Document inserted successfully');
+                } catch (error) {
+                    console.error('Error writing document to Firestore:', error);
+                }
+
+                //get image from input field and upload to firebase storage
+                const imgFile = document.getElementById('imageUpload').files[0];
+                const storageRef = ref(storage, `images/boardMembers/${imgFile.name}`);
+
+                try {
+                    //change submit button text to "Inserting..." 
+                    document.getElementById('submitNewBoardMember').innerText = "Inserting...";
+                    //upload the image to firebase storage
+                    const uploadTask = uploadBytesResumable(storageRef, imgFile);
+                    uploadTask.on('state_changed', (snapshot) => {
+                        const percentage = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                        console.log(`Upload is ${percentage}% complete.`);
+                        document.getElementById('submitNewBoardMember').innerText = `Upload is ${percentage}% complete.`;
+                    }, (error) => {
+                        console.error('Error uploading file:', error);
+                    });
+                    uploadTask.on('complete', () => {
+                        document.getElementById('submitNewBoardMember').innerText = "Inserting...";
+                        document.getElementById('submitNewBoardMember').innerText = "Upload successful!";
+                    });
+
+                    console.log("File uploaded successfully!");
+                    //reset the form after successful upload
+                    document.getElementById('boardMemberForm').reset();
+                    //sleep for 10 seconds before resetting submitNewBoardMember button text 
+                    await new Promise(resolve => setTimeout(resolve, 10000));
+                    document.getElementById('submitNewBoardMember').innerText = "Submit";
+                } catch (error) {
+                    console.error("Upload failed:", error);
+                }
+
+            }
+        };
     });
 
-    document.getElementById("saveBlog").addEventListener("click", () => {
-        const content = document.getElementById("blogContent").value;
-        if (!content) return alert("Blog content is empty");
+    function validateBoardMember(formData) {
+        console.log(`validateBoardMember called with: ${JSON.stringify(formData)}`);
+        //if formdata is empty, return false
+        if (!formData) {
+            console.error("Form data is empty");
+            return false;
+        }
+        //check that formData has: name, title, dates, imageName, image File uploaded
+        if (!formData.name || !formData.title || !formData.dates || !formData.imageName) {
+            console.error("Form data is missing required fields");
+            return false;
+        }
 
-        db.collection("blog").add({ content, timestamp: firebase.firestore.FieldValue.serverTimestamp() })
-            .then(() => alert("Blog saved!"));
-    });
+        return true;  // All validations passed
+    }
 }

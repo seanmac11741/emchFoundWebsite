@@ -139,6 +139,19 @@ h2 {
     min-width: 320px;
 }
 
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.form label,
+input[type="text"],
+input[type="file"] {
+    margin-bottom: 5px;
+}
+
 .boardMemCards {
     display: flex;
     gap: 20px;
@@ -157,6 +170,21 @@ h2 {
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+}
+
+.card h2 {
+    font-size: 1.5rem;
+    /* Different size for heading 2 */
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    /* Different size for heading 3 */
+}
+
+.card p {
+    font-size: 1rem;
+    /* Different size for paragraphs */
 }
 
 .card:hover {
