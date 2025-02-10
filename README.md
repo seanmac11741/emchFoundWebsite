@@ -44,13 +44,11 @@ gsutil cors set cors.json gs://emchfoundation.firebasestorage.app
 - [x] replace paypal with Square link
 - [ ] Embed square link/qr code 
 - [x] Static Aux page with info 
-- [ ] Able to edit Aux page images and words on admin page 
 - [x] Page with board members pictures/names sourced from firestore/db
-- [ ] Admin page can add/update/remove board members pictures/names 
+- [x] Admin page can add/update/remove board members pictures/names 
 - [x] Admin page to change pictures 
 - [x] PDF Download working
 - [ ] Read and understand security here: https://firebase.google.com/docs/storage/security/rules-conditions#public 
 - [x] PDF upload on admin page to change files
-- [ ] Add 2fa for non-google users 
 - [ ] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
-- [ ] Lookup firebaseui for web and maybe use for login page
+- [x] Lookup firebaseui for web and maybe use for login page (nope)
