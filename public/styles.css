@@ -153,10 +153,11 @@ input[type="file"] {
 }
 
 .boardMemCards {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    /* Adjust the minmax values as per your requirements */
     gap: 20px;
-    flex-wrap: wrap;
-    align-items: center;
+    /* Gap between cards */
 }
 
 .card {
