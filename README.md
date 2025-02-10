@@ -29,6 +29,11 @@ firebase deploy
 ```bash 
 gsutil cors set cors.json gs://emchfoundation.firebasestorage.app
 ```
+### Backups 
+```bash 
+firebase firestore:backups:schedules:create --database '(default)' --recurrence 'WEEKLY' --retention 14w --day-of-week SUN
+
+```
 
 ## Todo list 
 - [x] Create bare bones website 
@@ -48,7 +53,7 @@ gsutil cors set cors.json gs://emchfoundation.firebasestorage.app
 - [x] Admin page can add/update/remove board members pictures/names 
 - [x] Admin page to change pictures 
 - [x] PDF Download working
-- [ ] Read and understand security here: https://firebase.google.com/docs/storage/security/rules-conditions#public 
+- [x] Read and understand security here: https://firebase.google.com/docs/storage/security/rules-conditions#public 
 - [x] PDF upload on admin page to change files
-- [ ] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
+- [x] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
 - [x] Lookup firebaseui for web and maybe use for login page (nope)
