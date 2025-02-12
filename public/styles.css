@@ -20,7 +20,7 @@
     --h2: bold 36px/36px var(--ff);
     --h3: bold 24px/30px var(--ff);
     --links: bold 18px/18px var(--ff);
-    --p: 18px/30px var(--ff);
+    --p: 16px/28px var(--ff);
     --subtext: 12px/20px var(--ff);
     --transition: 0.3s ease-in-out;
     --shadow: #00000030 0px 0px 10px 0px;
@@ -80,20 +80,66 @@ body {
     width: 90%;
     max-width: 1080px;
     margin: 40px auto;
-    display: flex;
-    align-items: center;
-    gap: 20px;
 }
 
-.titleSection {
-    margin: 0px auto;
+.smallSection {
+    margin: 0 auto;
     max-width: 1080px;
-    height: 10vh;
+    min-height: 10vh;
     scroll-snap-align: start;
 
     width: 90%;
     max-width: 1080px;
     margin: 40px auto;
+}
+
+.heroSection {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    margin: 0 auto;
+    max-width: 1080px;
+    min-height: 50vh;
+    scroll-snap-align: start;
+
+    width: 95%;
+    max-width: 1080px;
+    margin: 40px auto;
+}
+
+.heroTitle {
+    /* center text */
+    font-size: var(--p);
+    color: var(--color-secondary);
+    text-align: center;
+}
+
+.heroTitle::after {
+    content: '';
+    position: absolute;
+    border-bottom: 1px solid var(--color-secondary);
+}
+
+h2+p {
+    margin-top: 8px;
+}
+
+h2+p::before {
+    content: "";
+    display: block;
+    height: 2px;
+    background: var(--color-tertiary);
+    width: 50%;
+    margin-left: 25%;
+    margin-top: -2%;
+}
+
+.titleSection {
+    height: 10vh;
+    scroll-snap-align: start;
+    justify-content: center;
+    width: 90%;
+    max-width: 1080px;
+    margin: 20px auto;
     display: flex;
     align-items: center;
     gap: 20px;
@@ -127,6 +173,11 @@ h2 {
     align-items: center;
 }
 
+.col>* {
+    flex: 1;
+    min-width: 320px;
+}
+
 .row {
     display: flex;
     gap: 20px;
@@ -134,10 +185,6 @@ h2 {
     align-items: center;
 }
 
-.col>* {
-    flex: 1;
-    min-width: 320px;
-}
 
 .form {
     display: flex;
