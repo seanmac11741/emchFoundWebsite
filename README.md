@@ -54,6 +54,6 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] Admin page to change pictures 
 - [x] PDF Download working
 - [x] Read and understand security here: https://firebase.google.com/docs/storage/security/rules-conditions#public 
-- [x] PDF upload on admin page to change files
+- [ ] PDF upload on admin page to change files
 - [x] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
 - [x] Lookup firebaseui for web and maybe use for login page (nope)
