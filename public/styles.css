@@ -19,6 +19,7 @@
     /* ^ is how you do dynamically resizing headings */
     --h2: bold 36px/36px var(--ff);
     --h3: bold 24px/30px var(--ff);
+    --h4: bold 20px/24px var(--ff);
     --links: bold 18px/18px var(--ff);
     --p: 16px/28px var(--ff);
     --subtext: 12px/20px var(--ff);
@@ -91,6 +92,23 @@ body {
     width: 90%;
     max-width: 1080px;
     margin: 40px auto;
+}
+
+.footerSection {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    margin: 0 auto;
+    max-width: 1080px;
+    min-height: 10vh;
+    width: 100%;
+    max-width: 1080px;
+    position: sticky;
+    bottom: 0;
+}
+
+.contactClass {
+    margin-left: 15px;
+    padding-top: 5px;
 }
 
 .heroSection {
@@ -248,8 +266,13 @@ input[type="file"] {
 
 a {
     font: 600 1rem/1em var(--ff);
-    color: var(--color-accent);
+    color: var(--color-tertiary);
     text-decoration: none;
+    transition: color var(--transition);
+}
+
+a:hover {
+    color: var(--color-accent);
 }
 
 .social-icons {
@@ -262,12 +285,14 @@ a {
 }
 
 svg {
-    fill: var(--color-secondary);
+    fill: var(--color-primary);
     width: 20px;
+    margin: 10px;
+    transition: fill var(--transition);
 }
 
 svg:hover {
-    fill: var(--coloraccent);
+    fill: var(--color-accent);
 }
 
 #dark {

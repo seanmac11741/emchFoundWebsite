@@ -43,6 +43,7 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] Add user auth and login 
 - [x] Create blog page 
 - [ ] Make the home page a lot better. Big picture, fancy scroll animations
+- [ ] Add contact us section to the footer 
 - [ ] Blog entries can be create/read/update/deleted
 - [ ] Blog entries can have embedded facebook albums
 - [x] Add link to Paypal(Square?) site for donating 
