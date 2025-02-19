@@ -4,7 +4,7 @@ import { getPerformance } from "firebase/performance";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, getDoc, collection, query, deleteDoc, getDocs, addDoc, setDoc } from "firebase/firestore";
-import { uploadBytesResumable, getStorage, ref, getDownloadURL, deleteObject } from "firebase/storage";
+import { uploadBytesResumable, getStorage, ref, getDownloadURL, deleteObject, listAll } from "firebase/storage";
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCjPEIpk3-MithVHsp3gZt1Dvec-LZ6tIk",
@@ -67,6 +67,85 @@ onAuthStateChanged(auth, async (user) => {
         }
     }
 });
+
+async function SetPdfFiles() {
+    //fill in this div with current pdf files
+    //clear out any in current div 
+    let pdfFilesDiv = document.getElementById("pdfFilesdiv");
+    pdfFilesDiv.innerHTML = "";
+
+    const pdfFiles = await GetPdfFiles();
+    pdfFiles.forEach(pdfFile => {
+        console.log(pdfFile);
+        const pdfFileDiv = document.createElement("div");
+        pdfFileDiv.textContent = pdfFile.name + " --- " + pdfFile.fullPath;
+        pdfFileDiv.classList.add("pdf-file");
+        pdfFileDiv.appendChild(document.createElement("br"));
+        //add a button for file upload to pdfFileDiv 
+        const uploadButton = document.createElement("button");
+        uploadButton.textContent = "Upload New PDF";
+        uploadButton.addEventListener("click", async () => {
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.accept = ".pdf";
+
+            // Add event listener for 'change' on the input instead of calling click method
+            fileInput.addEventListener("change", async () => {
+                const file = fileInput.files[0];
+                console.log('Adding new file:', file);
+                if (file) {
+                    let pdfFileName;
+                    //only two of these, the file names are hardcoded to one of these two
+                    if (file.name == "District-bylaws.pdf") {
+                        pdfFileName = "District-bylaws.pdf";
+                    } else {
+                        pdfFileName = "Transparency-Notice.pdf";
+                    }
+                    // Upload the file to Firebase Storage
+                    const storageRef = ref(storage, `pdfDownloads/${pdfFileName}`);
+                    const uploadTask = uploadBytesResumable(storageRef, file);
+                    uploadTask.on('state_changed', async (snapshot) => {
+                        const percentage = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                        console.log(`Upload is ${percentage}% complete.`);
+                        uploadButton.innerText = `Upload is ${percentage}% complete.`;
+                        if (snapshot.bytesTransferred === snapshot.totalBytes) {
+                            console.log(`File uploaded successfully!`);
+                            uploadButton.innerText = "Upload successful!";
+                            return SetPdfFiles();
+                        }
+                    }, (error) => {
+                        console.error('Error uploading file:', error);
+                    });
+                }
+            });
+
+            // Call click method to open file dialog
+            fileInput.click();
+        });
+        pdfFileDiv.appendChild(uploadButton);
+        document.getElementById("pdfFilesdiv").appendChild(pdfFileDiv);
+    });
+}
+
+/**
+ * Returns a promise that resolves to an array of pdf file names.
+ */
+async function GetPdfFiles() {
+    let retarr = [];
+    const listRef = ref(storage, 'pdfDownloads/');
+
+    try {
+        const res = await listAll(listRef);
+
+        res.items.forEach((item) => {
+            retarr.push({ name: item.name, fullPath: item.fullPath });
+        });
+    } catch (error) {
+        console.error('Error listing files', error);
+    }
+
+    return retarr;
+}
 
 async function showGovContactLink() {
     //fill in this div with current link govContactLink
@@ -351,7 +430,7 @@ if (window.location.pathname.includes("admin.html")) {
     await displayBoardMembers();
     //for each board member, add a delete button on the admin page only 
     await addDeleteButton2BoardMems();
-    // await SetPdfFiles();
+    await SetPdfFiles();
     await showGovContactLink();
 
     //add function to call when button: submitNewBoardMember is clicked to get the form data 

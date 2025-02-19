@@ -43,7 +43,7 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] Add user auth and login 
 - [x] Create blog page 
 - [ ] Make the home page a lot better. Big picture, fancy scroll animations
-- [ ] Add contact us section to the footer 
+- [x] Add contact us section to the footer 
 - [ ] Blog entries can be create/read/update/deleted
 - [ ] Blog entries can have embedded facebook albums
 - [x] Add link to Paypal(Square?) site for donating 
@@ -55,6 +55,6 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] Admin page to change pictures 
 - [x] PDF Download working
 - [x] Read and understand security here: https://firebase.google.com/docs/storage/security/rules-conditions#public 
-- [ ] PDF upload on admin page to change files
+- [x] PDF upload on admin page to change files
 - [x] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
 - [x] Lookup firebaseui for web and maybe use for login page (nope)
