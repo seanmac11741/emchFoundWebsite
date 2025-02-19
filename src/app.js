@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, collection, query, deleteDoc, getDocs, addDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, collection, query, deleteDoc, getDocs, addDoc, setDoc } from "firebase/firestore";
 import { uploadBytesResumable, getStorage, ref, getDownloadURL, deleteObject } from "firebase/storage";
 // Firebase configuration
 const firebaseConfig = {
@@ -67,6 +67,19 @@ onAuthStateChanged(auth, async (user) => {
         }
     }
 });
+
+async function showGovContactLink() {
+    //fill in this div with current link govContactLink
+    const url = await GetGovContactLink();
+    document.getElementById('govContactLink').innerHTML = `<p>Current url:</p><p> ${url}</p>`;
+}
+
+window.updateGovContact = async function (newUrl) {
+    console.log('updateGovContact called with:' + newUrl);
+    const linkRef = doc(db, 'govLink', 'govLink1');
+    await setDoc(linkRef, { url: newUrl }, { merge: true });
+    await showGovContactLink();
+}
 
 // Function to display board members in the boardMemCards div
 async function displayBoardMembers() {
@@ -196,6 +209,25 @@ async function DeleteBoardMemFirestore(imgAltText) {
     });
 };
 
+async function GetGovContactLink() {
+    const collectionRef = collection(db, "govLink");
+    const querySnapshot = await getDocs(collectionRef);
+    let url = "404.html";
+    querySnapshot.forEach(doc => {
+        url = doc.data().url;
+        console.log('Colorado Government link found:', url);
+    });
+    return url;
+
+}
+
+//open the gov contact link in a new window 
+window.OpenGovContactLink = async function () {
+    //get colorado gov link from firestore 
+    const url = await GetGovContactLink();
+    window.open(url, '_blank');
+}
+
 window.downloadFile = function (fileName) {
     const fileRef = ref(storage, 'pdfDownloads/' + fileName);
 
@@ -319,74 +351,76 @@ if (window.location.pathname.includes("admin.html")) {
     await displayBoardMembers();
     //for each board member, add a delete button on the admin page only 
     await addDeleteButton2BoardMems();
-}
+    // await SetPdfFiles();
+    await showGovContactLink();
 
-//add function to call when button: submitNewBoardMember is clicked to get the form data 
+    //add function to call when button: submitNewBoardMember is clicked to get the form data 
 
-document.getElementById('submitNewBoardMember').onclick = async function (event) {
-    console.log("submitNewBoardMember clicked");
-    event.preventDefault();  // Preventing the default form submission behaviour
-    var formData = {
-        name: document.getElementById("name").value,
-        title: document.getElementById("title").value,
-        dates: document.getElementById("dates").value,
-    };
-    if (document.getElementById("imageUpload")) {
-        formData.imageName = document.getElementById("imageUpload").files[0].name;
-    }
+    document.getElementById('submitNewBoardMember').onclick = async function (event) {
+        console.log("submitNewBoardMember clicked");
+        event.preventDefault();  // Preventing the default form submission behaviour
+        var formData = {
+            name: document.getElementById("name").value,
+            title: document.getElementById("title").value,
+            dates: document.getElementById("dates").value,
+        };
+        if (document.getElementById("imageUpload")) {
+            formData.imageName = document.getElementById("imageUpload").files[0].name;
+        }
 
-    let validate = await validateBoardMember(formData);
-    if (!validate) {
-        console.log('outer call to showmodal');
-        showModal();
-    } else { //if validation passes, continue to insert into firestore 
-        //write to firestore
-        console.log('Writing doc to firestore...');
-        try {
-            await addDoc(collection(db, "boardMembers"), formData)
-                .then((docRef) => {
-                    console.log("Document written with ID: ", docRef.id);
+        let validate = await validateBoardMember(formData);
+        if (!validate) {
+            console.log('outer call to showmodal');
+            showModal();
+        } else { //if validation passes, continue to insert into firestore 
+            //write to firestore
+            console.log('Writing doc to firestore...');
+            try {
+                await addDoc(collection(db, "boardMembers"), formData)
+                    .then((docRef) => {
+                        console.log("Document written with ID: ", docRef.id);
+                    });
+                console.log('Document inserted successfully');
+            } catch (error) {
+                console.error('Error writing document to Firestore:', error);
+            }
+
+            //get image from input field and upload to firebase storage
+            const imgFile = document.getElementById('imageUpload').files[0];
+            const storageRef = ref(storage, `images/boardMembers/${imgFile.name}`);
+
+            try {
+                //change submit button text to "Inserting..." 
+                document.getElementById('submitNewBoardMember').innerText = "Inserting...";
+                //upload the image to firebase storage
+                const uploadTask = uploadBytesResumable(storageRef, imgFile);
+                uploadTask.on('state_changed', async (snapshot) => {
+                    const percentage = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    console.log(`Upload is ${percentage}% complete.`);
+                    document.getElementById('submitNewBoardMember').innerText = `Upload is ${percentage}% complete.`;
+                    if (snapshot.bytesTransferred === snapshot.totalBytes) {
+                        console.log(`File uploaded successfully!`);
+                        document.getElementById('submitNewBoardMember').innerText = "Upload successful!";
+                        await displayBoardMembers();
+                    }
+                }, (error) => {
+                    console.error('Error uploading file:', error);
                 });
-            console.log('Document inserted successfully');
-        } catch (error) {
-            console.error('Error writing document to Firestore:', error);
+
+                //reset the form after successful upload
+                document.getElementById('boardMemberForm').reset();
+                //sleep for 10 seconds before resetting submitNewBoardMember button text 
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                document.getElementById('submitNewBoardMember').innerText = "Submit";
+                //TODO: for some reason, this does not dynamically add the delete buttons... meh
+                await addDeleteButton2BoardMems();
+            } catch (error) {
+                console.error("Upload failed:", error);
+            }
+
         }
-
-        //get image from input field and upload to firebase storage
-        const imgFile = document.getElementById('imageUpload').files[0];
-        const storageRef = ref(storage, `images/boardMembers/${imgFile.name}`);
-
-        try {
-            //change submit button text to "Inserting..." 
-            document.getElementById('submitNewBoardMember').innerText = "Inserting...";
-            //upload the image to firebase storage
-            const uploadTask = uploadBytesResumable(storageRef, imgFile);
-            uploadTask.on('state_changed', async (snapshot) => {
-                const percentage = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                console.log(`Upload is ${percentage}% complete.`);
-                document.getElementById('submitNewBoardMember').innerText = `Upload is ${percentage}% complete.`;
-                if (snapshot.bytesTransferred === snapshot.totalBytes) {
-                    console.log(`File uploaded successfully!`);
-                    document.getElementById('submitNewBoardMember').innerText = "Upload successful!";
-                    await displayBoardMembers();
-                }
-            }, (error) => {
-                console.error('Error uploading file:', error);
-            });
-
-            //reset the form after successful upload
-            document.getElementById('boardMemberForm').reset();
-            //sleep for 10 seconds before resetting submitNewBoardMember button text 
-            await new Promise(resolve => setTimeout(resolve, 10000));
-            document.getElementById('submitNewBoardMember').innerText = "Submit";
-            //TODO: for some reason, this does not dynamically add the delete buttons... meh
-            await addDeleteButton2BoardMems();
-        } catch (error) {
-            console.error("Upload failed:", error);
-        }
-
-    }
-};
+    };
+}
 
 function validateBoardMember(formData) {
     console.log(`validateBoardMember called with: ${JSON.stringify(formData)}`);

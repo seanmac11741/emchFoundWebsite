@@ -76,6 +76,19 @@
         </div>
 
     </div>
+    <div class="section">
+        <h2>Change Gov Contact link</h2>
+        <div class="govContactLink" id="govContactLink"></div>
+        <form onsubmit="event.preventDefault(); updateGovContact(document.querySelector('#contactInput').value);">
+            <label for="contactInput">New Gov Contact Link:</label>
+            <input type="text" id="contactInput" required>
+            <button type="submit" class="crispy-fill">Update URL</button>
+        </form>
+    </div>
+    <div class="section col">
+        <h2>Change PDF files</h2>
+        <div class="pdfFiles" id="pdfFiles"></div>
+    </div>
     <div class="section col">
         <h2>Blog Posts</h2>
         <textarea id="blogContent"></textarea>
