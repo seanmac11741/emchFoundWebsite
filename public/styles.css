@@ -432,6 +432,7 @@ span {
 
     .navbar ul.active {
         display: flex;
+        margin: 0;
     }
 
     .navbar ul li {
@@ -463,4 +464,10 @@ span {
     padding: 20px;
     border: 1px solid #888;
     width: 30%;
+}
+
+/* Blog events stuff */
+
+.blogPost h2 {
+    text-align: center;
 }
