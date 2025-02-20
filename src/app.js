@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, collection, query, deleteDoc, getDocs, addDoc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, collection, query, orderBy, limit, deleteDoc, getDocs, addDoc, setDoc } from "firebase/firestore";
 import { uploadBytesResumable, getStorage, ref, getDownloadURL, deleteObject, listAll } from "firebase/storage";
 // Firebase configuration
 const firebaseConfig = {
@@ -333,54 +333,6 @@ window.hideModal = function () {
 }
 
 
-//only load these on district page
-if (window.location.pathname.includes("district.html")) {
-    // Load board members from Firestore
-    console.log('Loading board members from Firestore');
-    window.onload = async function () {
-        await displayBoardMembers();
-    }
-
-}
-
-//only load these on admin or login pages
-if (window.location.pathname.includes("admin.html") || window.location.pathname.includes("login.html")) {
-    // Sign-in with Google
-    signInBtn.onclick = () => {
-        console.log('Sign-in button clicked');
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                console.log("User signed in:", result.user);
-            })
-            .catch((error) => {
-                console.error("Sign-in error:", error);
-            });
-    };
-
-    // Sign-out function
-    signOutBtn.onclick = () => {
-        signOut(auth).then(() => {
-            console.log("User signed out");
-        });
-    };
-
-    // Sign-in with email password 
-    if (window.location.pathname.includes("login.html")) {
-        document.getElementById('loginForm').addEventListener('submit', async function
-            (event) {
-            event.preventDefault();  // Preventing the default form submission behaviour
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            let validate = await validateAndSubmit(username, password)
-            if (!validate) {
-                console.log('outer call to showmodal');
-                showModal();
-            }
-        });
-    }
-
-};
-
 async function addDeleteButton2BoardMems() {
     var boardMembers = document.querySelectorAll('.boardMemCards');
     boardMembers.forEach(function (member) {
@@ -422,6 +374,110 @@ async function addDeleteButton2BoardMems() {
         }
     });
 }
+
+//get blog posts from Firestore and add them to a div container named: "blogPostContainer"
+/**
+ * blogpost document structure:
+ * {
+ *  "title": "Sample Blog Post",
+ *  "body": "This is a sample blog post.",
+ *  "createdAt": "2023-10-05T14:30:00Z",
+ *  "fbEmbed":"<iframe></iframe>"
+ *  "squareLink":"https://www.example.com"
+ * }
+ * 
+ * blogpotdiv looks like this: 
+ * <div class="blogPost" id="blogPost">
+            <h2>Summer Fundraiser</h2>
+            <a href="https://square.link/u/1" target="_blank">
+                <button class="crispy-fill">Buy Tickets now!</button>
+            </a>
+            <p>Lorem Ipsum.</p>
+
+            <div class="fbEmbed">
+                <iframe
+                    </iframe>
+            </div>
+        </div>
+ */
+async function displayBlogPosts() {
+    console.log('Loading blog posts from Firestore');
+    //blank out container
+    const blogPostContainer = document.getElementById('blogPostContainer');
+    blogPostContainer.innerHTML = '';
+    //get data from firestore 
+    const collectionRef = collection(db, 'blogposts');
+    const q = query(collectionRef, orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    for (let i = 0; i < querySnapshot.docs.length; i++) {
+        const doc = querySnapshot.docs[i];
+        console.log('Blog post:', doc.data());
+        const blogPostDiv = document.createElement('div');
+        blogPostDiv.className = 'blogPost';
+        blogPostDiv.innerHTML = `<div class="blogPost"><h2>${doc.data().title}</h2>
+            <a href="${doc.data().squareLink}" target="_blank">
+                <button class="crispy-fill">Buy Tickets now!</button>
+            </a>
+            <p>${doc.data().body}</p>
+            <div class="fbEmbed">${doc.data().fbEmbed}</div>
+            </div>`;
+        blogPostContainer.appendChild(blogPostDiv);
+    }
+}
+
+if (window.location.pathname.includes("events.html")) {
+    // Load blog posts from firestore 
+    window.onload = async function () {
+        await displayBlogPosts();
+    }
+}
+
+//only load these on district page
+if (window.location.pathname.includes("district.html")) {
+    // Load board members from Firestore
+    console.log('Loading board members from Firestore');
+    window.onload = async function () {
+        await displayBoardMembers();
+    }
+}
+
+//only load these on admin or login pages
+if (window.location.pathname.includes("admin.html") || window.location.pathname.includes("login.html")) {
+    // Sign-in with Google
+    signInBtn.onclick = () => {
+        console.log('Sign-in button clicked');
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                console.log("User signed in:", result.user);
+            })
+            .catch((error) => {
+                console.error("Sign-in error:", error);
+            });
+    };
+
+    // Sign-out function
+    signOutBtn.onclick = () => {
+        signOut(auth).then(() => {
+            console.log("User signed out");
+        });
+    };
+
+    // Sign-in with email password 
+    if (window.location.pathname.includes("login.html")) {
+        document.getElementById('loginForm').addEventListener('submit', async function
+            (event) {
+            event.preventDefault();  // Preventing the default form submission behaviour
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            let validate = await validateAndSubmit(username, password)
+            if (!validate) {
+                console.log('outer call to showmodal');
+                showModal();
+            }
+        });
+    }
+
+};
 
 //only admin page stuff here 
 if (window.location.pathname.includes("admin.html")) {

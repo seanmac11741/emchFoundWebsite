@@ -467,6 +467,13 @@ span {
 }
 
 /* Blog events stuff */
+.blogPost {
+    /* add 40px to top and bottom */
+    padding-top: 40px;
+    padding-bottom: 40px;
+    /* add a large horizontal line at the bottom of the post */
+    border-bottom: 2px solid var(--color-tertiary);
+}
 
 .blogPost h2 {
     text-align: center;
