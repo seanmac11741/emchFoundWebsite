@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, collection, query, orderBy, limit, deleteDoc, getDocs, addDoc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, collection, query, orderBy, deleteDoc, getDocs, addDoc, setDoc } from "firebase/firestore";
 import { uploadBytesResumable, getStorage, ref, getDownloadURL, deleteObject, listAll } from "firebase/storage";
 // Firebase configuration
 const firebaseConfig = {
@@ -366,6 +366,8 @@ window.handleSubmitCreateBlogPost = async function (event) {
     alert(`Blog post created successfully with title: ${title}!`);
     // clear the form fields
     document.getElementById('blogForm').reset();
+    //reload blogs
+    await blogPostsWithDeleteButton();
 
 }
 
@@ -446,17 +448,57 @@ async function displayBlogPosts() {
     const q = query(collectionRef, orderBy("createdAt", "desc"));
     const querySnapshot = await getDocs(q);
     for (let i = 0; i < querySnapshot.docs.length; i++) {
-        const doc = querySnapshot.docs[i];
-        console.log('Blog post:', doc.data());
+        const queryDoc = querySnapshot.docs[i];
+        console.log('Blog post:', queryDoc.data());
         const blogPostDiv = document.createElement('div');
         blogPostDiv.className = 'blogPost';
-        blogPostDiv.innerHTML = `<div class="blogPost"><h2>${doc.data().title}</h2>
-            <a href="${doc.data().squareLink}" target="_blank">
+        blogPostDiv.innerHTML = `<div class="blogPost"><h2>${queryDoc.data().title}</h2>
+            <a href="${queryDoc.data().squareLink}" target="_blank">
                 <button class="crispy-fill">Buy Tickets now!</button>
             </a>
-            <p>${doc.data().body}</p>
-            <div class="fbEmbed">${doc.data().fbEmbed}</div>
+            <p>${queryDoc.data().body}</p>
+            <div class="fbEmbed">${queryDoc.data().fbEmbed}</div>
             </div>`;
+        blogPostContainer.appendChild(blogPostDiv);
+    }
+}
+
+/**
+ * Load blog posts with a delete button just for the admin page 
+ */
+async function blogPostsWithDeleteButton() {
+    console.log('Loading blog posts from Firestore');
+    //blank out container
+    const blogPostContainer = document.getElementById('blogPostContainer');
+    blogPostContainer.innerHTML = '';
+    //get data from firestore 
+    const collectionRef = collection(db, 'blogposts');
+    const q = query(collectionRef, orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    for (let i = 0; i < querySnapshot.docs.length; i++) {
+        const queryDoc = querySnapshot.docs[i];
+        console.log('Blog post:', queryDoc.data());
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-button';
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', (function (docId) {
+            return async function () {
+                console.log('Deleting blog post:', docId);
+                await deleteDoc(doc(db, 'blogposts', queryDoc.id));
+                console.log('Blog post deleted successfully');
+                blogPostsWithDeleteButton();
+            };
+        })(queryDoc.id));
+        const blogPostDiv = document.createElement('div');
+        blogPostDiv.className = 'blogPost';
+        blogPostDiv.innerHTML = `<div class="blogPost"><h2>${queryDoc.data().title}</h2>
+            <a href="${queryDoc.data().squareLink}" target="_blank">
+            <button class="crispy-fill">Buy Tickets now!</button>
+            </a>
+            <p>${queryDoc.data().body}</p>
+            <div class="fbEmbed">${queryDoc.data().fbEmbed}</div>
+            </div>`;
+        blogPostDiv.prepend(deleteButton);
         blogPostContainer.appendChild(blogPostDiv);
     }
 }
@@ -524,6 +566,8 @@ if (window.location.pathname.includes("admin.html")) {
     await addDeleteButton2BoardMems();
     await SetPdfFiles();
     await showGovContactLink();
+    await blogPostsWithDeleteButton();
+
 
     //add function to call when button: submitNewBoardMember is clicked to get the form data 
 
