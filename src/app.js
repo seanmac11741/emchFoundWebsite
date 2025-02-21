@@ -332,6 +332,42 @@ window.hideModal = function () {
     document.getElementById('myModal').style.display = "none";
 }
 
+/**
+ * This function uploads a blog post to firestore
+ * @param {e} event 
+ */
+window.handleSubmitCreateBlogPost = async function (event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
+    // Get values from the inputs
+    var title = document.getElementById('blogTitle').value;
+    var body = document.getElementById('blogBody').value;
+    var createdAt = document.getElementById('createBlogCreatedAt').value;
+    var fbEmbed = document.getElementById('fbEmbed').value;
+    var squareLink = document.getElementById('squareLink').value;
+
+    let blogPostData = {
+        title: title,
+        body: body,
+        createdAt: createdAt,
+        fbEmbed: fbEmbed,
+        squareLink: squareLink
+    };
+    console.log('Creating blog post with data:');
+    console.log(blogPostData);
+
+    //upload blog post to firestore
+    await addDoc(collection(db, "blogposts"), blogPostData)
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+        });
+    //show a message to user that it uploaded 
+    alert(`Blog post created successfully with title: ${title}!`);
+    // clear the form fields
+    document.getElementById('blogForm').reset();
+
+}
 
 async function addDeleteButton2BoardMems() {
     var boardMembers = document.querySelectorAll('.boardMemCards');

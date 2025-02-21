@@ -37,15 +37,18 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 
 ## Todo list 
 - [x] Create bare bones website 
-- [ ] Aquire good pictures 
+- [ ] Aquire good pictures and put them in a slideshow on main page
 - [x] Create good navbar layout
 - [x] Deploy to Firebase
 - [x] Add user auth and login 
 - [x] Create blog page 
 - [ ] Make the home page a lot better. Big picture, fancy scroll animations
 - [x] Add contact us section to the footer 
-- [ ] Blog entries can be create/read/update/deleted
-- [ ] Blog entries can have embedded facebook albums
+- [x] Dynamic Blog page 
+- [x] Blog entries can be created
+- [ ] Blog entries can be updated
+- [ ] Blog entries can be deleted
+- [x] Blog entries can have embedded facebook albums
 - [x] Add link to Paypal(Square?) site for donating 
 - [x] replace paypal with Square link
 - [ ] Embed square link/qr code 

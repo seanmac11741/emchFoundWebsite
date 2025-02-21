@@ -478,3 +478,9 @@ span {
 .blogPost h2 {
     text-align: center;
 }
+
+.textarea {
+    width: 90%;
+    height: 50px;
+    padding: 10px;
+}
