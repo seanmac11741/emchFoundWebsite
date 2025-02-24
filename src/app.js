@@ -543,7 +543,7 @@ if (window.location.pathname.includes("district.html")) {
 }
 
 //only index page stuff here 
-if (window.location.pathname.includes("index.html")) {
+if (document.getElementById('heroImageSlideshow')) {
     //load most recent blog post here into the singleBlogPost element 
     console.log('Loading most recent blog post from Firestore');
     await displayMostRecentBlogPost();
