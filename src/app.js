@@ -463,6 +463,29 @@ async function displayBlogPosts() {
     }
 }
 
+async function displayMostRecentBlogPost() {
+    const blogPostContainer = document.getElementById('singleBlogPost');
+    blogPostContainer.innerHTML = '';
+    //get data from firestore 
+    const collectionRef = collection(db, 'blogposts');
+    const q = query(collectionRef, orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    for (let i = 0; i < 1; i++) {
+        const queryDoc = querySnapshot.docs[i];
+        console.log('Blog post:', queryDoc.data());
+        const blogPostDiv = document.createElement('div');
+        blogPostDiv.className = 'blogPost';
+        blogPostDiv.innerHTML = `<div class="blogPost"><h2>${queryDoc.data().title}</h2>
+            <a href="${queryDoc.data().squareLink}" target="_blank">
+                <button class="crispy-fill">Buy Tickets now!</button>
+            </a>
+            <p>${queryDoc.data().body}</p>
+            <div class="fbEmbed">${queryDoc.data().fbEmbed}</div>
+            </div>`;
+        blogPostContainer.appendChild(blogPostDiv);
+    }
+}
+
 /**
  * Load blog posts with a delete button just for the admin page 
  */
@@ -517,6 +540,28 @@ if (window.location.pathname.includes("district.html")) {
     window.onload = async function () {
         await displayBoardMembers();
     }
+}
+
+//only index page stuff here 
+if (window.location.pathname.includes("index.html")) {
+    //load most recent blog post here into the singleBlogPost element 
+    console.log('Loading most recent blog post from Firestore');
+    await displayMostRecentBlogPost();
+
+    //Slideshow logic
+    //Replace this element every 2 seconds heroImageSlideshow
+    const heroImageSlideshow = document.getElementById('heroImageSlideshow');
+    const SlideshowImages = [
+        './images/laptopDoctorStethiscope.jpg',
+        './images/manyDoctorsWorking.jpg',
+        './images/East-Morgan-County-Hospital_Exterior.jpg'
+    ];
+    let currentImageIndex = 0;
+    heroImageSlideshow.classList.add('fade');
+    setInterval(() => {
+        heroImageSlideshow.src = SlideshowImages[currentImageIndex];
+        currentImageIndex = (currentImageIndex + 1) % SlideshowImages.length;
+    }, 5000);
 }
 
 //only load these on admin or login pages
