@@ -61,3 +61,6 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] PDF upload on admin page to change files
 - [x] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
 - [x] Lookup firebaseui for web and maybe use for login page (nope)
+- [x] Title is being cutoff by navbar on large screens
+- [ ] Add Foundation board to home page. Found Board has District board + 4 others 
+- [ ] Make district board one row, that grows/shrinks
