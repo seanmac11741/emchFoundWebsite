@@ -219,11 +219,30 @@ input[type="file"] {
 }
 
 .boardMemCards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    /* Adjust the minmax values as per your requirements */
+    display: flex;
+    justify-content: center;
+    /* This centers the cards horizontally if they don't all fit in one row */
     gap: 20px;
-    /* Gap between cards */
+    padding: 20px;
+    /* Padding around the cards for aesthetics, remove this if you want */
+}
+
+@media screen and (max-width: 750px) {
+
+    /* Adjust this breakpoint as needed */
+    .boardMemCards {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+        flex-wrap: wrap;
+        /* This enables the cards to wrap onto new lines when there is not enough space */
+    }
+
+    .card>* {
+        flex: 1;
+        min-width: 200px;
+    }
 }
 
 .card {
@@ -231,12 +250,10 @@ input[type="file"] {
     color: var(--color-primary);
     border-radius: 12px;
     flex: 1;
-    display: flex;
-    flex-direction: column;
     gap: 10px;
     align-items: center;
-    justify-content: center;
     transition: var(--transition);
+    padding-top: 10px;
 }
 
 .card h2 {
@@ -260,7 +277,7 @@ input[type="file"] {
 }
 
 .card-img {
-    height: 300px;
+    width: 100%;
     object-fit: cover;
     border-radius: 8px;
 }
@@ -359,7 +376,7 @@ span {
 }
 
 
-@media (max-width: 800px) {
+@media (max-width: 750px) {
     section {
         flex-direction: column;
     }
@@ -418,7 +435,7 @@ span {
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 750px) {
     .navbar ul {
         display: none;
         flex-direction: column;
