@@ -160,6 +160,48 @@ window.updateGovContact = async function (newUrl) {
     await showGovContactLink();
 }
 
+//Function to display the Foundation board members 
+async function displayFoundBoardMembers() {
+    //clear the FoundboardMemCards div
+    document.getElementById('FoundboardMemCards').innerHTML = '';
+    const querySnapshot = await getDocs(collection(db, 'foundBoardMembers'));
+    querySnapshot.forEach((doc) => {
+        const boardMember = doc.data();
+        console.log(boardMember);
+        // Add the board member to a card element in the div with id "FoundboardMemCards"
+        const cardElement = document.getElementById('FoundboardMemCards');
+        const card = document.createElement('div');
+        card.className = 'FoundationCard';
+        //Set board member img 
+        const imgElement = document.createElement('img');
+        //get image from firebase storage 
+        const imgRef = ref(storage, 'images/boardMembers/' + boardMember.imageName);
+        getDownloadURL(imgRef).then((url) => {
+            imgElement.src = url;
+        }).catch((error) => {
+            console.error("Error getting download URL:", error);
+        });
+        imgElement.alt = boardMember.imageName;
+        imgElement.className = 'card-img';
+        card.appendChild(imgElement);
+
+        //Set board member name
+        const nameElement = document.createElement('h2');
+        nameElement.textContent = boardMember.name;
+        card.appendChild(nameElement);
+        //Set board member title
+        const title = document.createElement('h3');
+        title.textContent = boardMember.foundTitle;
+        card.appendChild(title);
+        //Set board member dates
+        const dates = document.createElement('h3');
+        dates.textContent = boardMember.districtTitle;
+        card.appendChild(dates);
+        cardElement.appendChild(card);
+    });
+};
+
+
 // Function to display board members in the boardMemCards div
 async function displayBoardMembers() {
     //clear the boardMemCards div
@@ -169,7 +211,6 @@ async function displayBoardMembers() {
         const boardMember = doc.data();
         console.log(boardMember);
         // Add the board member to a card element in the div with id "boardMemCards"
-        // Add the board member to a card element in the div with id  "boardMemCards"
         const cardElement = document.getElementById('boardMemCards');
         const card = document.createElement('div');
         card.className = 'card';
@@ -267,6 +308,31 @@ async function DeleteBoardMemImg(imgAltText) {
     });
 };
 
+async function DeleteFoundBoardMemImg(imgAltText) {
+    //check if picture is used in district boardmembers 
+    const collectionRef = collection(db, "boardMembers");
+    const querySnapshot = await getDocs(collectionRef);
+    let docId = 'x';
+    querySnapshot.forEach(doc => {
+        if (doc.data().imageName === imgAltText) {
+            docId = doc.id;
+        }
+    });
+    if (docId != 'x') {
+        console.log('Img in use for district Board members');
+        return;
+    }
+
+    console.log('Deleting board member image: ' + imgAltText);
+    const imgRef = ref(storage, 'images/boardMembers/' + imgAltText);
+    await deleteObject(imgRef).then(() => {
+        console.log('Image deleted successfully');
+    }).catch((error) => {
+        console.error('Error deleting image:', error);
+    });
+
+};
+
 //function to delete board member from firestore 
 async function DeleteBoardMemFirestore(imgAltText) {
     console.log('Deleting board member from Firestore: ' + imgAltText);
@@ -285,6 +351,27 @@ async function DeleteBoardMemFirestore(imgAltText) {
         console.log('Board member deleted successfully');
     }).catch((error) => {
         console.error('Error deleting board member from Firestore:', error);
+    });
+};
+
+//function to delete a foundation board member from Firestore 
+async function DeleteFoundBoardMemFirestore(imgAltText) {
+    console.log('Deleting board member from Firestore: ' + imgAltText);
+    //get document ref id from firestore 
+    const collectionRef = collection(db, "foundBoardMembers");
+    const querySnapshot = await getDocs(collectionRef);
+    let docId = '';
+    querySnapshot.forEach(doc => {
+        if (doc.data().imageName === imgAltText) {
+            docId = doc.id;
+        }
+    });
+    const docRef = doc(db, "foundBoardMembers", docId);
+    console.log('Document ID to delete:', docId);
+    await deleteDoc(docRef).then(() => {
+        console.log('Foundation Board member deleted successfully');
+    }).catch((error) => {
+        console.error('Error deleting Foundation board member from Firestore:', error);
     });
 };
 
@@ -399,6 +486,50 @@ async function addDeleteButton2BoardMems() {
                 try {
                     await DeleteBoardMemImg(delImg);
                     await DeleteBoardMemFirestore(delImg);
+                    card.remove();
+                    console.log('Image deleted successfully!');
+                } catch (error) {
+                    console.error('Error deleting board member image:', error);
+                }
+
+            });
+
+            card.appendChild(deleteBtn);
+
+        }
+    });
+
+}
+
+async function addDeleteButton2FoundBoardMems() {
+    //now add delete button to the foundation board members 
+    var boardMembers = document.querySelectorAll('.FoundboardMemCards');
+    boardMembers.forEach(function (member) {
+        console.log('member:', member);
+
+        // Get all child elements of the member
+        const children = Array.from(member.children).filter((child) => child instanceof HTMLElement);
+        for (const card of children) {
+            //child is the card element here 
+            let delImg;
+            console.log('child:', card);
+            const gchildren = Array.from(card.children).filter((gchild) => gchild instanceof HTMLElement);
+            for (const gchild of gchildren) {
+                //one of the gchilds is an img tag, we need the alt text from that as a key for the delete operation
+                if (gchild.className === 'card-img') {
+                    delImg = gchild.alt;
+                    console.log('delImg:', delImg);
+                }
+            }
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+
+            deleteBtn.addEventListener('click', async function () {
+                console.log('Delete img: ', delImg);
+                try {
+                    await DeleteFoundBoardMemImg(delImg);
+                    await DeleteFoundBoardMemFirestore(delImg);
                     card.remove();
                     console.log('Image deleted successfully!');
                 } catch (error) {
@@ -547,6 +678,7 @@ if (document.getElementById('heroImageSlideshow')) {
     //load most recent blog post here into the singleBlogPost element 
     console.log('Loading most recent blog post from Firestore');
     await displayMostRecentBlogPost();
+    await displayFoundBoardMembers();
 
     //Slideshow logic
     //Replace this element every 2 seconds heroImageSlideshow
@@ -607,8 +739,10 @@ if (window.location.pathname.includes("admin.html")) {
 
     //display the board members
     await displayBoardMembers();
+    await displayFoundBoardMembers();
     //for each board member, add a delete button on the admin page only 
     await addDeleteButton2BoardMems();
+    await addDeleteButton2FoundBoardMems();
     await SetPdfFiles();
     await showGovContactLink();
     await blogPostsWithDeleteButton();
@@ -672,8 +806,72 @@ if (window.location.pathname.includes("admin.html")) {
                 //sleep for 10 seconds before resetting submitNewBoardMember button text 
                 await new Promise(resolve => setTimeout(resolve, 10000));
                 document.getElementById('submitNewBoardMember').innerText = "Submit";
-                //TODO: for some reason, this does not dynamically add the delete buttons... meh
                 await addDeleteButton2BoardMems();
+            } catch (error) {
+                console.error("Upload failed:", error);
+            }
+
+        }
+    };
+
+    //submit button for new Foundation board member: 
+    document.getElementById('submitNewFoundBoardMember').onclick = async function (event) {
+        console.log("submitNewFoundBoardMember clicked");
+        event.preventDefault();  // Preventing the default form submission behaviour
+        var formData = {
+            name: document.getElementById("FoundationName").value,
+            districtTitle: document.getElementById("districtTitle").value,
+            foundTitle: document.getElementById("foundTitle").value,
+        };
+        if (document.getElementById("foundImageUpload")) {
+            formData.imageName = document.getElementById("foundImageUpload").files[0].name;
+        }
+
+        let validate = await validateFoundBoardMember(formData);
+        if (!validate) {
+            console.log('outer call to showmodal');
+            showModal();
+        } else { //if validation passes, continue to insert into firestore 
+            //write to firestore
+            console.log('Writing doc to firestore...');
+            try {
+                await addDoc(collection(db, "foundBoardMembers"), formData)
+                    .then((docRef) => {
+                        console.log("Document written with ID: ", docRef.id);
+                    });
+                console.log('Document inserted successfully');
+            } catch (error) {
+                console.error('Error writing document to Firestore:', error);
+            }
+
+            //get image from input field and upload to firebase storage
+            const imgFile = document.getElementById('foundImageUpload').files[0];
+            const storageRef = ref(storage, `images/boardMembers/${imgFile.name}`);
+
+            try {
+                //change submit button text to "Inserting..." 
+                document.getElementById('submitNewFoundBoardMember').innerText = "Inserting...";
+                //upload the image to firebase storage
+                const uploadTask = uploadBytesResumable(storageRef, imgFile);
+                uploadTask.on('state_changed', async (snapshot) => {
+                    const percentage = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    console.log(`Upload is ${percentage}% complete.`);
+                    document.getElementById('submitNewFoundBoardMember').innerText = `Upload is ${percentage}% complete.`;
+                    if (snapshot.bytesTransferred === snapshot.totalBytes) {
+                        console.log(`File uploaded successfully!`);
+                        document.getElementById('submitNewFoundBoardMember').innerText = "Upload successful!";
+                        await displayFoundBoardMembers();
+                    }
+                }, (error) => {
+                    console.error('Error uploading file:', error);
+                });
+
+                //reset the form after successful upload
+                document.getElementById('foundBoardMemberForm').reset();
+                //sleep for 10 seconds before resetting submitNewFoundBoardMember button text 
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                document.getElementById('submitNewFoundBoardMember').innerText = "Submit";
+                await addDeleteButton2FoundBoardMems();
             } catch (error) {
                 console.error("Upload failed:", error);
             }
@@ -691,6 +889,22 @@ function validateBoardMember(formData) {
     }
     //check that formData has: name, title, dates, imageName, image File uploaded
     if (!formData.name || !formData.title || !formData.dates || !formData.imageName) {
+        console.error("Form data is missing required fields");
+        return false;
+    }
+
+    return true;  // All validations passed
+}
+
+function validateFoundBoardMember(formData) {
+    console.log(`validateFoundBoardMember called with: ${JSON.stringify(formData)}`);
+    //if formdata is empty, return false
+    if (!formData) {
+        console.error("Form data is empty");
+        return false;
+    }
+    //check that formData has: name, title, dates, imageName, image File uploaded
+    if (!formData.name || !formData.foundTitle || !formData.imageName) {
         console.error("Form data is missing required fields");
         return false;
     }

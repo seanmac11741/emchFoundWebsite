@@ -67,15 +67,49 @@
             <button type="submit" class="crispy-fill" id="submitNewBoardMember">Submit</button>
         </form>
     </div>
+
     <div>
-        <h2>Delete Board Member</h2>
+        <h2>Delete District Board Member</h2>
         <div class="section col">
             <div class="boardMemCards" id="boardMemCards">
                 <!-- firebase loads the board member cards from firebase and inserts here as class="card" divs -->
             </div>
         </div>
-
     </div>
+
+    <div>
+        <h2>Add Foundation Board member</h2>
+        <!-- form for adding a board member, including fields for name, title, dates, image name, and image upload   -->
+        <form id="foundBoardMemberForm" class="form" method="post" enctype="multipart/form-data">
+            <div style="display: flex; align-items: center;">
+                <label for="FoundationName">Name:</label>
+                <input type="text" id="FoundationName" required>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <label for="districtTitle">District Title:</label><input type="text" id="districtTitle" required>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <label for="foundTitle">Foundation Title:</label>
+                <input type="text" id="foundTitle" required>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <label for="foundImageUpload">Image Upload(.jpg or .png):</label>
+                <!-- only accept png or jpg files  -->
+                <input type="file" id="foundImageUpload" accept=".png,.jpg" required>
+            </div>
+            <button type="submit" class="crispy-fill" id="submitNewFoundBoardMember">Submit</button>
+        </form>
+    </div>
+
+    <div>
+        <h2>Delete Foundation Board Member</h2>
+        <div class="section col">
+            <div class="FoundboardMemCards" id="FoundboardMemCards">
+                <!-- firebase loads the board member cards from firebase and inserts here as class="card" divs -->
+            </div>
+        </div>
+    </div>
+
     <div class="section">
         <h2>Change Gov Contact link</h2>
         <div class="govContactLink" id="govContactLink"></div>
@@ -142,7 +176,9 @@
             <div class="contactClass">
                 <h3>Contact Us</h3>
                 <p>Phone: <a href="tel:+19708424899">+1 (970) 842-4899</a></p>
-                <p>Email: <a href="mailto:Elise.Gerken@Bannerhealth.com">Elise.Gerken@Bannerhealth.com</a></p>
+                <p>Email: <a href="mailto:Elise.Gerken@Bannerhealth.com">Elise.Gerken@Bannerhealth.com</a> Or <a
+                        href="mailto:wendy.danielson@bannerhealth.com">Wendy.Danielson@Bannerhealth.com</a></p>
+                </p>
                 <p>Address: 242 Cambridge Street Brush, CO 80723 <a href="https://maps.app.goo.gl/gtuvsNQiguFUj31P9"
                         target="_blank">Directions</a></p>
             </div>

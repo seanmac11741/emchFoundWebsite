@@ -245,6 +245,56 @@ input[type="file"] {
     }
 }
 
+/* FoundboardMemCards */
+.FoundboardMemCards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    min-width: 200px;
+}
+
+/* todo make a foundation members card css */
+.FoundationCard {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border-radius: 12px;
+    flex: 1;
+    gap: 10px;
+    align-items: center;
+    transition: var(--transition);
+    padding-top: 10px;
+    min-width: 200px;
+}
+
+
+.FoundationCard h2 {
+    font-size: 1.5rem;
+    /* Different size for heading 2 */
+}
+
+.FoundationCard h3 {
+    font-size: 1.2rem;
+    /* Different size for heading 3 */
+}
+
+.FoundationCard p {
+    font-size: 1rem;
+    /* Different size for paragraphs */
+}
+
+.FoundationCard:hover {
+    scale: 1.01;
+    box-shadow: var(--shadow);
+}
+
+.FoundationCard-img {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
 .card {
     background-color: var(--color-secondary);
     color: var(--color-primary);
@@ -254,6 +304,7 @@ input[type="file"] {
     align-items: center;
     transition: var(--transition);
     padding-top: 10px;
+    /* min-width: 150px; */
 }
 
 .card h2 {

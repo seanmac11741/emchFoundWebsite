@@ -62,5 +62,8 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] Go through this vid for education of Firebase: https://www.youtube.com/watch?v=iWEgpdVSZyg 
 - [x] Lookup firebaseui for web and maybe use for login page (nope)
 - [x] Title is being cutoff by navbar on large screens
-- [ ] Add Foundation board to home page. Found Board has District board + 4 others 
-- [ ] Make district board one row, that grows/shrinks
+- [x] Add Foundation board to home page. Found Board has District board + 4 others 
+- [x] Make district board one row, that grows/shrinks
+- [x] Add Wendy to contact us section
+- [ ] Add pictures to blog posts 
+- [ ] On Admin page, just make text fields editable and update that way? 
