@@ -103,6 +103,15 @@ body {
     bottom: 0;
 }
 
+.userDetails {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    margin: 0 auto;
+    max-width: 1080px;
+    min-height: 10vh;
+    width: 90%;
+}
+
 .contactClass {
     margin-left: 15px;
     padding-top: 5px;

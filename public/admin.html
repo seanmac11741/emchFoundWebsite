@@ -45,7 +45,7 @@
     </div>
 
     <div>
-        <h2>Add Board member</h2>
+        <h2>Add District Board member</h2>
         <!-- form for adding a board member, including fields for name, title, dates, image name, and image upload   -->
         <form id="boardMemberForm" class="form" method="post" enctype="multipart/form-data">
             <div style="display: flex; align-items: center;">
@@ -115,8 +115,8 @@
         <div class="govContactLink" id="govContactLink"></div>
         <form onsubmit="event.preventDefault(); updateGovContact(document.querySelector('#contactInput').value);">
             <label for="contactInput">New Gov Contact Link:</label>
-            <input type="text" id="contactInput" required>
-            <button type="submit" class="crispy-fill">Update URL</button>
+            <input type="text" id="contactInput" required><br>
+            <button type="submit">Update URL</button>
         </form>
     </div>
     <div class="section">
@@ -165,7 +165,7 @@
         </section>
 
         <section id="whenSignedIn" hidden="true">
-            <div id="userDetails"></div>
+            <div class="userDetails" id="userDetails"></div>
             <button id="signOutBtn">Sign Out</button>
         </section>
 
