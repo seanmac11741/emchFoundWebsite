@@ -335,13 +335,14 @@ input[type="file"] {
 
 a {
     font: 600 1rem/1em var(--ff);
-    color: var(--color-tertiary);
+    color: var(--color-primary);
     text-decoration: none;
     transition: color var(--transition);
 }
 
 a:hover {
     color: var(--color-accent);
+    text-decoration: underline;
 }
 
 .social-icons {
@@ -355,7 +356,7 @@ a:hover {
 
 svg {
     fill: var(--color-primary);
-    width: 20px;
+    width: 40px;
     margin: 10px;
     transition: fill var(--transition);
 }

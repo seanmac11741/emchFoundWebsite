@@ -67,3 +67,4 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] Add Wendy to contact us section
 - [ ] Add pictures to blog posts 
 - [ ] On Admin page, just make text fields editable and update that way? 
+- [ ] Change the sign in with Google button to look more like a real google button 
