@@ -15,7 +15,7 @@
     --color-accent: hsl(0, 0%, 95%);
     --ff: "University Roman LET";
     --ff2: "Fira Code", monospace;
-    --h1: bold 48px/48px var(--ff);
+    --h1: bold 42px/42px var(--ff);
     /* ^ is how you do dynamically resizing headings */
     --h2: bold 36px/36px var(--ff);
     --h3: bold 24px/30px var(--ff);
@@ -51,7 +51,7 @@ header {
     background: var(--color-primary);
     top: 0;
     z-index: 5;
-    margin: 20px auto;
+    margin: 0 auto;
     width: 100%;
     max-width: 1080px;
     display: flex;
@@ -66,6 +66,7 @@ body {
     color: var(--color-secondary);
     font-family: var(--ff);
     font: var(--p);
+    min-width: 400px;
 }
 
 /* html {
@@ -168,6 +169,7 @@ h2+p::before {
 }
 
 .titleSection {
+    position: relative;
     height: 10vh;
     scroll-snap-align: start;
     justify-content: center;
@@ -528,6 +530,26 @@ span {
     .navbar .menu-toggle {
         display: block;
     }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 60px;
+    }
+
+    .titleSection {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .titleSection h1 {
+        font-size: 30px;
+        color: var(--color-secondary);
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
 }
 
 /* Modal stuff  */

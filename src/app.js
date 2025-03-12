@@ -433,13 +433,15 @@ window.handleSubmitCreateBlogPost = async function (event) {
     var createdAt = document.getElementById('createBlogCreatedAt').value;
     var fbEmbed = document.getElementById('fbEmbed').value;
     var squareLink = document.getElementById('squareLink').value;
+    var squareButtonText = document.getElementById('squareButtonText').value;
 
     let blogPostData = {
         title: title,
         body: body,
         createdAt: createdAt,
         fbEmbed: fbEmbed,
-        squareLink: squareLink
+        squareLink: squareLink,
+        squareButtonText: squareButtonText
     };
     console.log('Creating blog post with data:');
     console.log(blogPostData);
@@ -544,31 +546,7 @@ async function addDeleteButton2FoundBoardMems() {
     });
 }
 
-//get blog posts from Firestore and add them to a div container named: "blogPostContainer"
-/**
- * blogpost document structure:
- * {
- *  "title": "Sample Blog Post",
- *  "body": "This is a sample blog post.",
- *  "createdAt": "2023-10-05T14:30:00Z",
- *  "fbEmbed":"<iframe></iframe>"
- *  "squareLink":"https://www.example.com"
- * }
- * 
- * blogpotdiv looks like this: 
- * <div class="blogPost" id="blogPost">
-            <h2>Summer Fundraiser</h2>
-            <a href="https://square.link/u/1" target="_blank">
-                <button class="crispy-fill">Buy Tickets now!</button>
-            </a>
-            <p>Lorem Ipsum.</p>
 
-            <div class="fbEmbed">
-                <iframe
-                    </iframe>
-            </div>
-        </div>
- */
 async function displayBlogPosts() {
     console.log('Loading blog posts from Firestore');
     //blank out container
@@ -581,15 +559,8 @@ async function displayBlogPosts() {
     for (let i = 0; i < querySnapshot.docs.length; i++) {
         const queryDoc = querySnapshot.docs[i];
         console.log('Blog post:', queryDoc.data());
-        const blogPostDiv = document.createElement('div');
-        blogPostDiv.className = 'blogPost';
-        blogPostDiv.innerHTML = `<div class="blogPost"><h2>${queryDoc.data().title}</h2>
-            <a href="${queryDoc.data().squareLink}" target="_blank">
-                <button class="crispy-fill">Buy Tickets now!</button>
-            </a>
-            <p>${queryDoc.data().body}</p>
-            <div class="fbEmbed">${queryDoc.data().fbEmbed}</div>
-            </div>`;
+        console.log('queryDoc.data().squareLink is: ' + queryDoc.data().squareLink);
+        const blogPostDiv = getBlogPostHtml(queryDoc);
         blogPostContainer.appendChild(blogPostDiv);
     }
 }
@@ -604,15 +575,7 @@ async function displayMostRecentBlogPost() {
     for (let i = 0; i < 1; i++) {
         const queryDoc = querySnapshot.docs[i];
         console.log('Blog post:', queryDoc.data());
-        const blogPostDiv = document.createElement('div');
-        blogPostDiv.className = 'blogPost';
-        blogPostDiv.innerHTML = `<div class="blogPost"><h2>${queryDoc.data().title}</h2>
-            <a href="${queryDoc.data().squareLink}" target="_blank">
-                <button class="crispy-fill">Buy Tickets now!</button>
-            </a>
-            <p>${queryDoc.data().body}</p>
-            <div class="fbEmbed">${queryDoc.data().fbEmbed}</div>
-            </div>`;
+        let blogPostDiv = getBlogPostHtml(queryDoc);
         blogPostContainer.appendChild(blogPostDiv);
     }
 }
@@ -632,6 +595,59 @@ async function blogPostsWithDeleteButton() {
     for (let i = 0; i < querySnapshot.docs.length; i++) {
         const queryDoc = querySnapshot.docs[i];
         console.log('Blog post:', queryDoc.data());
+        let blogPostDiv = getBlogPostHtml(queryDoc, { delBut: true });
+        blogPostContainer.appendChild(blogPostDiv);
+    }
+}
+
+//get blog posts from Firestore and add them to a div container named: "blogPostContainer"
+/**
+ * blogpost document structure:
+ * {
+ *  "title": "Sample Blog Post",
+ *  "body": "This is a sample blog post.",
+ *  "createdAt": "2023-10-05T14:30:00Z",
+ *  "fbEmbed":"<iframe></iframe>",
+ *  "squareLink":"https://www.example.com",
+ *  "squareButtonText":"Buy Tickets now!"
+ * }
+ * 
+ * blogpotdiv looks like this: 
+ * <div class="blogPost" id="blogPost">
+            <h2>Summer Fundraiser</h2>
+            <a href="https://square.link/u/1" target="_blank">
+                <button class="crispy-fill">Buy Tickets now!</button>
+            </a>
+            <p>Lorem Ipsum.</p>
+
+            <div class="fbEmbed">
+                <iframe
+                    </iframe>
+            </div>
+        </div>
+ */
+function getBlogPostHtml(queryDoc, config) {
+    const blogPostDiv = document.createElement('div');
+    blogPostDiv.className = 'blogPost';
+    let squareLink = queryDoc.data().squareLink || '';
+    let squareButtonText = queryDoc.data().squareButtonText || '';
+    let inhtml = `<div class="blogPost"><h2>${queryDoc.data().title}</h2>
+    `;
+    if (squareLink != '') {
+
+        inhtml += `
+            <a href="${squareLink}" target="_blank">
+            <button class="crispy-fill">${squareButtonText ? squareButtonText : 'Buy Tickets now!'}</button>
+            </a>`
+    }
+    inhtml += `
+            <p>${queryDoc.data().body}</p>
+            <div class="fbEmbed">${queryDoc.data().fbEmbed}</div>
+            </div>`;
+
+    blogPostDiv.innerHTML = inhtml;
+
+    if (config && config.delBut) {
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
         deleteButton.textContent = 'Delete';
@@ -643,18 +659,11 @@ async function blogPostsWithDeleteButton() {
                 blogPostsWithDeleteButton();
             };
         })(queryDoc.id));
-        const blogPostDiv = document.createElement('div');
-        blogPostDiv.className = 'blogPost';
-        blogPostDiv.innerHTML = `<div class="blogPost"><h2>${queryDoc.data().title}</h2>
-            <a href="${queryDoc.data().squareLink}" target="_blank">
-            <button class="crispy-fill">Buy Tickets now!</button>
-            </a>
-            <p>${queryDoc.data().body}</p>
-            <div class="fbEmbed">${queryDoc.data().fbEmbed}</div>
-            </div>`;
+
         blogPostDiv.prepend(deleteButton);
-        blogPostContainer.appendChild(blogPostDiv);
     }
+
+    return blogPostDiv;
 }
 
 if (window.location.pathname.includes("events.html")) {

@@ -68,3 +68,8 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [ ] Add pictures to blog posts 
 - [ ] On Admin page, just make text fields editable and update that way? 
 - [ ] Change the sign in with Google button to look more like a real google button 
+- [x] Fix title behind navbar
+- [x] Square link on blog posts optional 
+- [x] Update the square button text 
+- [x] Facebook post optional
+- [ ] setup firebase backup
