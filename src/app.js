@@ -47,7 +47,7 @@ onAuthStateChanged(auth, async (user) => {
     console.log("Auth state changed:", user);
     if (user) {
         // If on the admin page, check admin access
-        if (window.location.pathname.includes("admin.html")) {
+        if (window.location.pathname.includes("admin")) {
             checkAdminAccess(user);
         }
         whenSignedIn.hidden = false;
@@ -56,9 +56,9 @@ onAuthStateChanged(auth, async (user) => {
         console.log(`User ID: ${user.uid}`);
     } else {
         // Redirect unauthorized users trying to access the admin page
-        if (window.location.pathname.includes("admin.html")) {
+        if (window.location.pathname.includes("admin")) {
             alert("Access Denied! You are not an admin.");
-            window.location.href = "login.html";
+            window.location.href = "login";
         }
         if (whenSignedIn) {
             whenSignedIn.hidden = true;
@@ -666,7 +666,7 @@ function getBlogPostHtml(queryDoc, config) {
     return blogPostDiv;
 }
 
-if (window.location.pathname.includes("events.html")) {
+if (window.location.pathname.includes("events")) {
     // Load blog posts from firestore 
     window.onload = async function () {
         await displayBlogPosts();
@@ -674,7 +674,7 @@ if (window.location.pathname.includes("events.html")) {
 }
 
 //only load these on district page
-if (window.location.pathname.includes("district.html")) {
+if (window.location.pathname.includes("district")) {
     // Load board members from Firestore
     console.log('Loading board members from Firestore');
     window.onload = async function () {
@@ -706,7 +706,7 @@ if (document.getElementById('heroImageSlideshow')) {
 }
 
 //only load these on admin or login pages
-if (window.location.pathname.includes("admin.html") || window.location.pathname.includes("login.html")) {
+if (window.location.pathname.includes("admin") || window.location.pathname.includes("login")) {
     // Sign-in with Google
     signInBtn.onclick = () => {
         console.log('Sign-in button clicked');
@@ -727,24 +727,24 @@ if (window.location.pathname.includes("admin.html") || window.location.pathname.
     };
 
     // Sign-in with email password 
-    if (window.location.pathname.includes("login.html")) {
-        document.getElementById('loginForm').addEventListener('submit', async function
-            (event) {
-            event.preventDefault();  // Preventing the default form submission behaviour
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            let validate = await validateAndSubmit(username, password)
-            if (!validate) {
-                console.log('outer call to showmodal');
-                showModal();
-            }
-        });
-    }
+    // if (window.location.pathname.includes("login")) {
+    //     document.getElementById('loginForm').addEventListener('submit', async function
+    //         (event) {
+    //         event.preventDefault();  // Preventing the default form submission behaviour
+    //         var username = document.getElementById("username").value;
+    //         var password = document.getElementById("password").value;
+    //         let validate = await validateAndSubmit(username, password)
+    //         if (!validate) {
+    //             console.log('outer call to showmodal');
+    //             showModal();
+    //         }
+    //     });
+    // }
 
 };
 
 //only admin page stuff here 
-if (window.location.pathname.includes("admin.html")) {
+if (window.location.pathname.includes("admin")) {
 
     //display the board members
     await displayBoardMembers();
