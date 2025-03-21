@@ -434,6 +434,7 @@ window.handleSubmitCreateBlogPost = async function (event) {
     var fbEmbed = document.getElementById('fbEmbed').value;
     var squareLink = document.getElementById('squareLink').value;
     var squareButtonText = document.getElementById('squareButtonText').value;
+    var squareTableSponsor = document.getElementById('squareTableSponsor').value;
 
     let blogPostData = {
         title: title,
@@ -441,7 +442,8 @@ window.handleSubmitCreateBlogPost = async function (event) {
         createdAt: createdAt,
         fbEmbed: fbEmbed,
         squareLink: squareLink,
-        squareButtonText: squareButtonText
+        squareButtonText: squareButtonText,
+        squareTableSponsor: squareTableSponsor
     };
     console.log('Creating blog post with data:');
     console.log(blogPostData);
@@ -609,7 +611,8 @@ async function blogPostsWithDeleteButton() {
  *  "createdAt": "2023-10-05T14:30:00Z",
  *  "fbEmbed":"<iframe></iframe>",
  *  "squareLink":"https://www.example.com",
- *  "squareButtonText":"Buy Tickets now!"
+ *  "squareButtonText":"Buy Tickets now!",
+ *  "squareTableSponsor": "https://square.com/aasdf"
  * }
  * 
  * blogpotdiv looks like this: 
@@ -631,6 +634,7 @@ function getBlogPostHtml(queryDoc, config) {
     blogPostDiv.className = 'blogPost';
     let squareLink = queryDoc.data().squareLink || '';
     let squareButtonText = queryDoc.data().squareButtonText || '';
+    let squareTableSponsor = queryDoc.data().squareTableSponsor || '';
     let inhtml = `<div class="blogPost"><h2>${queryDoc.data().title}</h2>
     `;
     if (squareLink != '') {
@@ -640,6 +644,14 @@ function getBlogPostHtml(queryDoc, config) {
             <button class="crispy-fill">${squareButtonText ? squareButtonText : 'Buy Tickets now!'}</button>
             </a>`
     }
+
+    if (squareTableSponsor != '') {
+        inhtml += `
+        <a href="${squareTableSponsor}" target="_blank">
+        <button class="crispy-fill">Sponsor a Table</button>
+        </a>`
+    }
+
     inhtml += `
             <p>${queryDoc.data().body}</p>
             <div class="fbEmbed">${queryDoc.data().fbEmbed}</div>

@@ -429,6 +429,7 @@ button:hover {
     border: solid 1px var(--color-secondary);
     box-shadow: 0 2px var(--color-secondary);
     width: 100%;
+    margin: 5px;
 }
 
 .crispy-fill:hover {
