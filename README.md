@@ -73,3 +73,8 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] Update the square button text 
 - [x] Facebook post optional
 - [ ] setup firebase backup
+- [x] Add Scholarship page 
+- [ ] sections for each scholarship should have pdf, and the most recent recipient
+- [x] Make text bigger on blog posts 
+- [ ] Research formatted text field for bold/italic/etc (could maybe use quill https://www.npmjs.com/package/quill)
+- [ ] Add second button to blog posts for sponsoring a table (optional button) 

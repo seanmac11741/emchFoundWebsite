@@ -575,6 +575,12 @@ span {
 }
 
 /* Blog events stuff */
+.BlogBodyWrapper {
+    color: var(--color-secondary);
+    margin-bottom: 10px;
+    background-color: white;
+}
+
 .blogPost {
     /* add 40px to top and bottom */
     padding-top: 40px;
@@ -585,6 +591,11 @@ span {
 
 .blogPost h2 {
     text-align: center;
+}
+
+.blogPost p {
+    font-size: 1.3em;
+    line-height: 1.6;
 }
 
 .textarea {
