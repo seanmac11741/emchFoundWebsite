@@ -94,13 +94,8 @@ async function SetPdfFiles() {
                 const file = fileInput.files[0];
                 console.log('Adding new file:', file);
                 if (file) {
-                    let pdfFileName;
-                    //only two of these, the file names are hardcoded to one of these two
-                    if (file.name == "District-bylaws.pdf") {
-                        pdfFileName = "District-bylaws.pdf";
-                    } else {
-                        pdfFileName = "Transparency-Notice.pdf";
-                    }
+                    //set the file name to whatever it was before this, do not allow user to change this, it is hardcoded on html pages
+                    let pdfFileName = pdfFile.name;
                     // Upload the file to Firebase Storage
                     const storageRef = ref(storage, `pdfDownloads/${pdfFileName}`);
                     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -171,7 +166,7 @@ async function displayStaffScholarshipCards(type, delButton = false) {
     let cardsDiv;
     if (type == 'staff') {
         cardsDiv = 'staffScholarshipCards';
-    } else {
+    } else if (type == 'student') {
         cardsDiv = 'nonStaffScholarshipCards';
     }
     document.getElementById(cardsDiv).innerHTML = ''; // clear the existing cards
@@ -215,9 +210,70 @@ async function displayStaffScholarshipCards(type, delButton = false) {
         bodyText.textContent = scholar.body;
         card.appendChild(bodyText);
 
+        if (delButton) {
+            const delButton = document.createElement('button');
+            delButton.textContent = 'Delete Scholar';
+            delButton.addEventListener('click', async function () {
+                //delete from firestore
+                await DeleteScholarFirestore(scholar.image);
+                console.log('Image deleted from Firestore: ' + scholar.image);
+                //delete image from storage 
+                await DeleteScholarImg(scholar.image);
+                console.log('Image deleted from storage: ' + scholar.image);
+                //delete the card from the DOM
+                cardElement.removeChild(card);
+            });
+
+
+            // Use MutationObserver to listen for changes in the DOM
+            const observer = new MutationObserver((mutationsList, observer) => {
+                const cardExists = document.querySelector('.scholar-card');
+                if (!cardExists) {
+                    // Remove the event listener when the card is removed from the DOM
+                    delButton.removeEventListener('click', async function () { });
+                    observer.disconnect();
+                }
+            });
+            // Start observing the target node for configured mutations
+            observer.observe(document.body, { childList: true });
+            card.appendChild(delButton);
+        }
         cardElement.appendChild(card);
     });
 }
+
+//function to delete scholar from firestore 
+async function DeleteScholarFirestore(imgAltText) {
+    console.log('Deleting scholar from Firestore: ' + imgAltText);
+    //get document ref id from firestore 
+    const collectionRef = collection(db, "staffscholarship");
+    const querySnapshot = await getDocs(collectionRef);
+    let docId = '';
+    querySnapshot.forEach(doc => {
+        if (doc.data().image === imgAltText) {
+            docId = doc.id;
+        }
+    });
+    const docRef = doc(db, "staffscholarship", docId);
+    console.log('Document ID to delete:', docId);
+    await deleteDoc(docRef).then(() => {
+        console.log('scholar deleted successfully: ' + docId);
+    }).catch((error) => {
+        console.error('Error deleting scholar member from Firestore:', error);
+    });
+};
+
+// Function to delete scholar img
+async function DeleteScholarImg(imgAltText) {
+    //check if admin
+    console.log('Deleting scholar image: ' + imgAltText);
+    const imgRef = ref(storage, 'images/scholars/' + imgAltText);
+    await deleteObject(imgRef).then(() => {
+        console.log('Image deleted successfully');
+    }).catch((error) => {
+        console.error('Error deleting image:', error);
+    });
+};
 
 //Function to display the Foundation board members 
 async function displayFoundBoardMembers() {
@@ -836,6 +892,9 @@ if (window.location.pathname.includes("admin")) {
     await SetPdfFiles();
     await showGovContactLink();
     await blogPostsWithDeleteButton();
+    await displayStaffScholarshipCards('staff', true);
+    await displayStaffScholarshipCards('student', true);
+
 
 
     //add function to call when button: submitNewBoardMember is clicked to get the form data 
@@ -903,6 +962,67 @@ if (window.location.pathname.includes("admin")) {
 
         }
     };
+
+    //submit button for new Scholar recipient: 
+    document.getElementById('submitNewScholar').onclick = async function (event) {
+        console.log("submitNewScholar clicked");
+        event.preventDefault();
+        var formData = {
+            body: document.getElementById("scholarBody").value,
+            //createdAt in this format: March 21, 2025 at 1:23:33 PM UTC-5
+            createdAt: new Date().toISOString(),
+            image: document.getElementById("scholarImageUpload").files[0].name,
+            name: document.getElementById("scholarName").value,
+            title: document.getElementById("scholarTitle").value,
+            type: document.querySelector('#scholarType').value,
+            year: document.getElementById("scholarYear").value,
+        };
+
+        console.log('Creating new scholar with data:', formData);
+
+        //insert into firestore 
+        try {
+            await addDoc(collection(db, "staffscholarship"), formData)
+                .then((docRef) => {
+                    console.log("Document written with ID: ", docRef.id);
+                });
+            console.log('Document inserted successfully');
+        } catch (error) {
+            console.error('Error writing document to Firestore:', error);
+        }
+
+        //get image from input field and upload to firebase storage
+        const imgFile = document.getElementById('scholarImageUpload').files[0];
+        const storageRef = ref(storage, `images/scholars/${imgFile.name}`);
+        try {
+            //change submit button text to "Inserting..." 
+            document.getElementById('submitNewScholar').innerText = "Uploading...";
+            //upload the image to firebase storage
+            const uploadTask = uploadBytesResumable(storageRef, imgFile);
+            uploadTask.on('state_changed', async (snapshot) => {
+                const percentage = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                console.log(`Upload is ${percentage}% complete.`);
+                document.getElementById('submitNewScholar').innerText = `Upload is ${percentage}% complete.`;
+                if (snapshot.bytesTransferred === snapshot.totalBytes) {
+                    console.log(`File uploaded successfully!`);
+                    document.getElementById('submitNewScholar').innerText = "Upload successful!";
+                }
+            }, (error) => {
+                console.error('Error uploading file:', error);
+            });
+
+            //reset the form after successful upload
+            document.getElementById('addScholarForm').reset();
+            //sleep for 5 seconds before resetting submitNewScholar button text 
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            document.getElementById('submitNewScholar').innerText = "Submit";
+            await displayStaffScholarshipCards(formData.type, true);
+        } catch (error) {
+            console.error("Upload failed:", error);
+        }
+
+    }
+
 
     //submit button for new Foundation board member: 
     document.getElementById('submitNewFoundBoardMember').onclick = async function (event) {

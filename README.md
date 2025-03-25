@@ -65,7 +65,6 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [x] Add Foundation board to home page. Found Board has District board + 4 others 
 - [x] Make district board one row, that grows/shrinks
 - [x] Add Wendy to contact us section
-- [ ] Add pictures to blog posts 
 - [ ] On Admin page, just make text fields editable and update that way? 
 - [ ] Change the sign in with Google button to look more like a real google button 
 - [x] Fix title behind navbar
@@ -75,7 +74,7 @@ firebase firestore:backups:schedules:create --database '(default)' --recurrence 
 - [ ] setup firebase backup
 - [x] Add Scholarship page 
 - [x] sections for each scholarship should have pdf, and the most recent recipient
-- [ ] Admin page section for adding/removing Scholar recipients
+- [x] Admin page section for adding/removing Scholar recipients
 - [x] Make text bigger on blog posts 
 - [ ] Research formatted text field for bold/italic/etc (could maybe use quill https://www.npmjs.com/package/quill)
 - [x] Add second button to blog posts for sponsoring a table (optional button) 

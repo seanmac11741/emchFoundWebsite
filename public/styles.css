@@ -262,7 +262,8 @@ input[type="file"] {
     }
 }
 
-.staffScholarshipCards {
+.staffScholarshipCards,
+.nonStaffScholarshipCards {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
