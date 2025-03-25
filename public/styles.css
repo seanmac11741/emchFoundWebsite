@@ -262,6 +262,15 @@ input[type="file"] {
     }
 }
 
+.staffScholarshipCards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 20px;
+    min-width: 200px;
+}
+
 /* FoundboardMemCards */
 .FoundboardMemCards {
     display: flex;

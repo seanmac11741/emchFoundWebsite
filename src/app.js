@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, collection, query, orderBy, deleteDoc, getDocs, addDoc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, collection, query, orderBy, deleteDoc, getDocs, addDoc, setDoc, where } from "firebase/firestore";
 import { uploadBytesResumable, getStorage, ref, getDownloadURL, deleteObject, listAll } from "firebase/storage";
 // Firebase configuration
 const firebaseConfig = {
@@ -158,6 +158,65 @@ window.updateGovContact = async function (newUrl) {
     const linkRef = doc(db, 'govLink', 'govLink1');
     await setDoc(linkRef, { url: newUrl }, { merge: true });
     await showGovContactLink();
+}
+
+//Function to display the scholarship cards and put them in staffScholCards div
+/**
+ * 
+ * @param {String} type staff or student
+ * @param {Boolean} delButton true if we want a delete button on here, only for admin page 
+ */
+async function displayStaffScholarshipCards(type, delButton = false) {
+    console.log('Getting staff scholarship cards of type: ' + type);
+    let cardsDiv;
+    if (type == 'staff') {
+        cardsDiv = 'staffScholarshipCards';
+    } else {
+        cardsDiv = 'nonStaffScholarshipCards';
+    }
+    document.getElementById(cardsDiv).innerHTML = ''; // clear the existing cards
+    const collRef = collection(db, 'staffscholarship');
+    const q = query(collRef, orderBy("createdAt", "desc"), where("type", "==", type));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+        const scholar = doc.data();
+        console.log('scholar:', scholar);
+        const cardElement = document.getElementById(cardsDiv);
+        const card = document.createElement('div');
+        card.className = 'FoundationCard';
+        //Set scholar member img 
+        const imgElement = document.createElement('img');
+        //get image from firebase storage 
+        const imgRef = ref(storage, 'images/scholars/' + scholar.image);
+        getDownloadURL(imgRef).then((url) => {
+            imgElement.src = url;
+        }).catch((error) => {
+            console.error("Error getting download URL:", error);
+        });
+        imgElement.alt = scholar.image;
+        imgElement.className = 'card-img';
+        card.appendChild(imgElement);
+
+        //Set scholar name
+        const nameElement = document.createElement('h2');
+        nameElement.textContent = scholar.name;
+        card.appendChild(nameElement);
+        //Set scholar title
+        const title = document.createElement('h3');
+        title.textContent = scholar.title;
+        card.appendChild(title);
+        //Set scholar dates
+        const dates = document.createElement('h3');
+        dates.textContent = scholar.year;
+        card.appendChild(dates);
+        //set scholar body 
+        const bodyText = document.createElement('p');
+        bodyText.textContent = scholar.body;
+        card.appendChild(bodyText);
+
+        cardElement.appendChild(card);
+    });
 }
 
 //Function to display the Foundation board members 
@@ -691,6 +750,16 @@ if (window.location.pathname.includes("district")) {
     console.log('Loading board members from Firestore');
     window.onload = async function () {
         await displayBoardMembers();
+    }
+}
+
+//only scholarship page stuff here 
+if (window.location.pathname.includes("scholarships")) {
+    // Load scholarship cards from Firestore 
+    console.log('Loading scholarship cards from Firestore');
+    window.onload = async function () {
+        await displayStaffScholarshipCards('staff');
+        await displayStaffScholarshipCards('student');
     }
 }
 
