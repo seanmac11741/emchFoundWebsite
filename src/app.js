@@ -830,8 +830,10 @@ if (document.getElementById('heroImageSlideshow')) {
     //Replace this element every 2 seconds heroImageSlideshow
     const heroImageSlideshow = document.getElementById('heroImageSlideshow');
     const SlideshowImages = [
-        './images/laptopDoctorStethiscope.jpg',
-        './images/manyDoctorsWorking.jpg',
+        './images/HelipadEMCH.png',
+        './images/ERinteriorBedRoomClean.png',
+        './images/ERinteriorThreePeopleWorking.png',
+        './images/ERsignOutside.png',
         './images/East-Morgan-County-Hospital_Exterior.jpg'
     ];
     let currentImageIndex = 0;
