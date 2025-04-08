@@ -29,7 +29,7 @@
           },
           {
             "key": "Content-Security-Policy",
-            "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' apis.google.com *.googletagmanager.com *.fbcdn.net *.googleapis.com *.google-analytics.com; style-src 'self' 'unsafe-inline' *.googletagmanager.com *.fbcdn.net *.googleapis.com *.google-analytics.com; img-src 'self' *.googleapis.com; connect-src 'self' *.googleapis.com; font-src 'self' *.gstatic.com; manifest-src 'self'; frame-src 'self' www.facebook.com emchfoundation.firebaseapp.com"
+            "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' apis.google.com *.googletagmanager.com *.fbcdn.net *.googleapis.com *.google-analytics.com; style-src 'self' 'unsafe-inline' *.googletagmanager.com *.fbcdn.net *.googleapis.com *.google-analytics.com; img-src 'self' *.googleapis.com; connect-src 'self' *.googleapis.com *.google-analytics.com; font-src 'self' *.gstatic.com; manifest-src 'self'; frame-src 'self' www.facebook.com emchfoundation.firebaseapp.com"
           }
         ]
       }
