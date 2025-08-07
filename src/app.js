@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getPerformance } from "firebase/performance";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, collection, query, orderBy, deleteDoc, getDocs, addDoc, setDoc, where } from "firebase/firestore";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, orderBy, deleteDoc, getDocs, addDoc, setDoc, where } from "firebase/firestore";
 import { uploadBytesResumable, getStorage, ref, getDownloadURL, deleteObject, listAll } from "firebase/storage";
 // Firebase configuration
 const firebaseConfig = {
@@ -279,8 +279,14 @@ async function DeleteScholarImg(imgAltText) {
 async function displayFoundBoardMembers() {
     //clear the FoundboardMemCards div
     document.getElementById('FoundboardMemCards').innerHTML = '';
-    const querySnapshot = await getDocs(collection(db, 'foundBoardMembers'));
-    querySnapshot.forEach((doc) => {
+
+    //get data from firestore 
+    const collectionRef = collection(db, 'foundBoardMembers');
+    const q = query(collectionRef, orderBy("displayOrder", "asc"));
+    const querySnapshot = await getDocs(q);
+
+    // querySnapshot.forEach((doc) => {
+    for (const doc of querySnapshot.docs) {
         const boardMember = doc.data();
         console.log(boardMember);
         // Add the board member to a card element in the div with id "FoundboardMemCards"
@@ -312,8 +318,9 @@ async function displayFoundBoardMembers() {
         const dates = document.createElement('h3');
         dates.textContent = boardMember.districtTitle;
         card.appendChild(dates);
+
         cardElement.appendChild(card);
-    });
+    };
 };
 
 
@@ -321,8 +328,15 @@ async function displayFoundBoardMembers() {
 async function displayBoardMembers() {
     //clear the boardMemCards div
     document.getElementById('boardMemCards').innerHTML = '';
-    const querySnapshot = await getDocs(collection(db, 'boardMembers'));
-    querySnapshot.forEach((doc) => {
+    // const querySnapshot = await getDocs(collection(db, 'boardMembers'));
+
+    //get data from firestore 
+    const collectionRef = collection(db, 'boardMembers');
+    const q = query(collectionRef, orderBy("displayOrder", "asc"));
+    const querySnapshot = await getDocs(q);
+
+    // querySnapshot.forEach((doc) => {
+    for (const doc of querySnapshot.docs) {
         const boardMember = doc.data();
         console.log(boardMember);
         // Add the board member to a card element in the div with id "boardMemCards"
@@ -355,7 +369,7 @@ async function displayBoardMembers() {
         dates.textContent = boardMember.dates;
         card.appendChild(dates);
         cardElement.appendChild(card);
-    });
+    };
 };
 
 async function validateAndSubmit(username, password) {
@@ -579,7 +593,7 @@ window.handleSubmitCreateBlogPost = async function (event) {
 
 async function addDeleteButton2BoardMems() {
     var boardMembers = document.querySelectorAll('.boardMemCards');
-    boardMembers.forEach(function (member) {
+    boardMembers.forEach(async function (member) {
         console.log('member:', member);
 
         // Get all child elements of the member
@@ -596,6 +610,29 @@ async function addDeleteButton2BoardMems() {
                     console.log('delImg:', delImg);
                 }
             }
+
+            //Set board member displayOrder
+            const displayOrder = document.createElement('p');
+            let dispOrder = await getDisplayOrder('boardMembers', delImg);
+            displayOrder.textContent = 'Display Order:' + dispOrder;
+            card.appendChild(displayOrder);
+
+            const upPositionBtn = document.createElement('button');
+            upPositionBtn.textContent = 'Move Up Position';
+            upPositionBtn.addEventListener('click', async function () {
+                //add 1.1 to the position of the person 
+                await MovePosition('boardMembers', delImg, true);
+            });
+
+            card.appendChild(upPositionBtn);
+
+            const downPositionBtn = document.createElement('button');
+            downPositionBtn.textContent = 'Move Down Position';
+            downPositionBtn.addEventListener('click', async function () {
+                //subtract 1.1 from the position of the person 
+                await MovePosition('boardMembers', delImg, false);
+            });
+            card.appendChild(downPositionBtn);
 
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'Delete';
@@ -620,10 +657,87 @@ async function addDeleteButton2BoardMems() {
 
 }
 
+async function getDisplayOrder(col, imgAltText) {
+    console.log('Get display order clicked from Firestore: ' + imgAltText);
+    const collectionRef = collection(db, col);
+    const querySnapshot = await getDocs(collectionRef);
+    let docId = '';
+    querySnapshot.forEach(doc => {
+        if (doc.data().imageName === imgAltText) {
+            docId = doc.id;
+        }
+    });
+    const docRef = doc(db, col, docId);
+    console.log('Document ID to update:', docId);
+    let currentPos = await getDoc(docRef);
+    if (currentPos.exists()) {
+        console.log("Document data displayOrder:", currentPos.data().displayOrder);
+    } else {
+        // currentPos.data() will be undefined in this case
+        console.error("No such document!");
+    }
+    return currentPos.data().displayOrder;
+}
+
+/**
+ * 
+ * @param {String} col Collection to update
+ * @param {String} imgAltText alt text to identify item
+ * @param {Boolean} upOrDown true for up 1.1, false for down 1.1
+ */
+async function MovePosition(col, imgAltText, upOrDown) {
+    console.log('Move up position clicked from Firestore: ' + imgAltText);
+    console.log('With col: ' + col);
+    //get document ref id from firestore 
+    try {
+
+        const collectionRef = collection(db, col);
+        const querySnapshot = await getDocs(collectionRef);
+        let docId = '';
+        querySnapshot.forEach(doc => {
+            if (doc.data().imageName === imgAltText) {
+                docId = doc.id;
+            }
+        });
+        const docRef = doc(db, col, docId);
+        console.log('Document ID to update:', docId);
+        let currentPos = await getDoc(docRef);
+        if (currentPos.exists()) {
+            console.log("Document data displayOrder:", currentPos.data().displayOrder);
+        } else {
+            // currentPos.data() will be undefined in this case
+            console.error("No such document!");
+        }
+
+        let newPos
+        if (upOrDown) {
+            //for true, we decrement the value, moving this person up in the order 
+            newPos = parseFloat(currentPos.data().displayOrder) - 1.1;
+        } else {
+            newPos = parseFloat(currentPos.data().displayOrder) + 1.1;
+        }
+        newPos = parseFloat(newPos.toFixed(2)); //round to 2 decimal places 
+
+        console.log('New displayOrder:', newPos);
+        await updateDoc(docRef, { displayOrder: newPos });
+        console.log('Updating displayOrder...');
+        if (col == 'boardMembers') {
+            await displayBoardMembers();
+            await addDeleteButton2BoardMems();
+        } else if (col == 'foundBoardMembers') {
+            await displayFoundBoardMembers();
+            await addDeleteButton2FoundBoardMems();
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Error updating displayOrder!");
+    }
+}
+
 async function addDeleteButton2FoundBoardMems() {
     //now add delete button to the foundation board members 
     var boardMembers = document.querySelectorAll('.FoundboardMemCards');
-    boardMembers.forEach(function (member) {
+    boardMembers.forEach(async function (member) {
         console.log('member:', member);
 
         // Get all child elements of the member
@@ -640,6 +754,29 @@ async function addDeleteButton2FoundBoardMems() {
                     console.log('delImg:', delImg);
                 }
             }
+
+            //Set board member displayOrder
+            const displayOrder = document.createElement('p');
+            let dispOrder = await getDisplayOrder('foundBoardMembers', delImg);
+            displayOrder.textContent = 'Display Order:' + dispOrder;
+            card.appendChild(displayOrder);
+
+            const upPositionBtn = document.createElement('button');
+            upPositionBtn.textContent = 'Move Up Position';
+            upPositionBtn.addEventListener('click', async function () {
+                //add 1.1 to the position of the person 
+                await MovePosition('foundBoardMembers', delImg, true);
+            });
+
+            card.appendChild(upPositionBtn);
+
+            const downPositionBtn = document.createElement('button');
+            downPositionBtn.textContent = 'Move Down Position';
+            downPositionBtn.addEventListener('click', async function () {
+                //subtract 1.1 from the position of the person 
+                await MovePosition('foundBoardMembers', delImg, false);
+            });
+            card.appendChild(downPositionBtn);
 
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'Delete';
@@ -921,6 +1058,7 @@ if (window.location.pathname.includes("admin")) {
             //write to firestore
             console.log('Writing doc to firestore...');
             try {
+                formData.displayOrder = 1.1;
                 await addDoc(collection(db, "boardMembers"), formData)
                     .then((docRef) => {
                         console.log("Document written with ID: ", docRef.id);
@@ -1047,6 +1185,7 @@ if (window.location.pathname.includes("admin")) {
             //write to firestore
             console.log('Writing doc to firestore...');
             try {
+                formData.displayOrder = 1.1;
                 await addDoc(collection(db, "foundBoardMembers"), formData)
                     .then((docRef) => {
                         console.log("Document written with ID: ", docRef.id);
