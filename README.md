@@ -1,6 +1,6 @@
 # emchFoundWebsite
 Website for EMCH Foundation
-Firebase url: https://emchfoundation.web.app/
+https://emchfoundation.com/
 
 ## Design reqs 
 
