@@ -78,7 +78,8 @@ body {
     scroll-snap-align: start;
     width: 90%;
     max-width: 1080px;
-    margin: 30px auto;
+    margin: 60px auto;
+    padding: 20px 0;
 }
 
 .section img {
@@ -105,9 +106,15 @@ body {
     max-width: 1080px;
     min-height: 10vh;
     width: 100%;
-    max-width: 1080px;
     position: sticky;
     bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 30px 24px;
+    gap: 20px;
+    box-sizing: border-box;
 }
 
 .userDetails {
@@ -127,14 +134,16 @@ body {
 .heroSection {
     background-color: var(--color-primary);
     color: var(--color-secondary);
-    margin: 0 auto;
+    margin: 10px auto;
     max-width: 1080px;
     min-height: 50vh;
     scroll-snap-align: start;
-
     width: 95%;
-    max-width: 1080px;
-    margin: 10px auto;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    padding: 30px 20px;
+    flex-wrap: wrap;
 }
 
 .heroSection :nth-child(2) {
@@ -161,11 +170,11 @@ h2+p {
 h2+p::before {
     content: "";
     display: block;
-    height: 2px;
+    height: 3px;
     background: var(--color-tertiary);
-    width: 50%;
-    margin-left: 25%;
-    margin-top: -2%;
+    width: 60px;
+    margin: 12px auto;
+    border-radius: 2px;
 }
 
 .titleSection {
@@ -313,8 +322,8 @@ input[type="file"] {
 }
 
 .FoundationCard:hover {
-    scale: 1.01;
-    box-shadow: var(--shadow);
+    scale: 1.03;
+    box-shadow: var(--shadowdark);
 }
 
 .FoundationCard-img {
@@ -351,8 +360,8 @@ input[type="file"] {
 }
 
 .card:hover {
-    scale: 1.01;
-    box-shadow: var(--shadow);
+    scale: 1.03;
+    box-shadow: var(--shadowdark);
 }
 
 .card-img {
@@ -438,12 +447,12 @@ button:hover {
     color: var(--color-primary);
     border: solid 1px var(--color-secondary);
     box-shadow: 0 2px var(--color-secondary);
-    width: 100%;
     margin: 5px;
 }
 
 .crispy-fill:hover {
     box-shadow: 0 4px var(--color-secondary);
+    transform: translateY(-1px);
 }
 
 .secondary {

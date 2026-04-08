@@ -11,6 +11,18 @@ https://emchfoundation.com/
 bun run build --watch
 firebase serve 
 ```
+
+Or run both in parallel with a single command (webpack watch + firebase serve, Ctrl+C kills both):
+```
+bun run dev
+```
+
+## Tests
+Vitest + jsdom. Tests live in `tests/` and are configured in `vitest.config.js`.
+```
+bun run test         # one-off run
+bun run test:watch   # watch mode
+```
 ## Deploy to firebase: 
 ```
 #Run the build command
