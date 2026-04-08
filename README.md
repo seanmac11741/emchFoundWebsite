@@ -20,9 +20,23 @@ bun run dev
 ## Tests
 Vitest + jsdom. Tests live in `tests/` and are configured in `vitest.config.js`.
 ```
-bun run test         # one-off run
+bun run test         # one-off run (jsdom only — emulator-backed tests are skipped)
 bun run test:watch   # watch mode
 ```
+
+### Emulator-backed tests
+Firestore/Storage rules tests use `@firebase/rules-unit-testing` against the
+Firebase Emulator Suite. The vitest globalSetup at `tests/setup/emulator-setup.js`
+detects `FIRESTORE_EMULATOR_HOST` and skips emulator tests when it's not set,
+so a plain `bun run test` stays fast and offline.
+
+To run the full suite (jsdom + emulator):
+```
+bun run test:emulator
+```
+This wraps vitest in `firebase emulators:exec --only firestore,auth`, which
+starts the emulators, runs the tests, and tears them down. Requires the
+`firebase` CLI on `$PATH` and Java (for the Firestore emulator).
 ## Deploy to firebase: 
 ```
 #Run the build command

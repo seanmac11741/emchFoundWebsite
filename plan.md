@@ -49,21 +49,21 @@
 ## Implementation Todo List
 
 Auth flow characterization tests (1-8):
-1. [] Create `tests/auth.test.js` with vitest + jsdom environment
-2. [] Mock the Firebase Auth module (`vi.mock`) so no real Firebase calls are made
-3. [] Test: unauthenticated user visiting admin page → `window.location.href` set to `login` and alert shown
-4. [] Test: authenticated user with non-admin UID visiting admin page → redirected to `index.html`
-5. [] Test: authenticated admin user visiting admin page → `whenSignedIn` section is unhidden, `whenSignedOut` is hidden
-6. [] Test: `onAuthStateChanged` populates `userDetails` with display name when signed in
-7. [] Test: sign-in button click triggers `signInWithPopup` on admin/login pages
-8. [] Test: sign-out button click triggers `signOut` — verify all 8 tests pass against current code before proceeding
+1. [x] Create `tests/auth.test.js` with vitest + jsdom environment
+2. [x] Mock the Firebase Auth module (`vi.mock`) so no real Firebase calls are made
+3. [x] Test: unauthenticated user visiting admin page → `window.location.href` set to `login` and alert shown
+4. [x] Test: authenticated user with non-admin UID visiting admin page → redirected to `index.html`
+5. [x] Test: authenticated admin user visiting admin page → `whenSignedIn` section is unhidden, `whenSignedOut` is hidden
+6. [x] Test: `onAuthStateChanged` populates `userDetails` with display name when signed in
+7. [x] Test: sign-in button click triggers `signInWithPopup` on admin/login pages
+8. [x] Test: sign-out button click triggers `signOut` — verify all 8 tests pass against current code before proceeding
 
 Rules testing infrastructure (9-13):
-9. [] Install `@firebase/rules-unit-testing` as a dev dependency
-10. [] Add a vitest global setup file that starts the Firestore and Storage emulators before the rules test suite runs
-11. [] Add `test:emulator` script to `package.json` that runs `firebase emulators:exec "bun run test"`
-12. [] Write a smoke test that initializes a test environment against the emulator and passes — confirm it runs in CI mode
-13. [] Verify `bun run test` executes both jsdom auth tests and emulator rules tests together
+9. [x] Install `@firebase/rules-unit-testing` as a dev dependency
+10. [x] Add a vitest global setup file that starts the Firestore and Storage emulators before the rules test suite runs
+11. [x] Add `test:emulator` script to `package.json` that runs `firebase emulators:exec "bun run test"`
+12. [x] Write a smoke test that initializes a test environment against the emulator and passes — confirm it runs in CI mode
+13. [x] Verify `bun run test` executes both jsdom auth tests and emulator rules tests together
 
 Firestore rules audit + characterization (14-20):
 14. [] Run `firebase firestore:rules:get` and save output alongside repo `firestore.rules` — diff the two and document any collections covered in deployed rules but missing from the repo file
