@@ -10,6 +10,7 @@
 
 export async function setup() {
   const firestoreHost = process.env.FIRESTORE_EMULATOR_HOST;
+  const storageHost = process.env.FIREBASE_STORAGE_EMULATOR_HOST;
 
   if (!firestoreHost) {
     // eslint-disable-next-line no-console
@@ -18,10 +19,20 @@ export async function setup() {
         'rules tests will be skipped. Run `bun run test:emulator` to include them.',
     );
     process.env.EMCH_EMULATORS_AVAILABLE = '0';
-    return;
+  } else {
+    process.env.EMCH_EMULATORS_AVAILABLE = '1';
   }
 
-  process.env.EMCH_EMULATORS_AVAILABLE = '1';
+  if (!storageHost) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[emulator-setup] Storage emulator env vars not set — ' +
+        'storage rules tests will be skipped. Run `bun run test:emulator` to include them.',
+    );
+    process.env.EMCH_STORAGE_EMULATOR_AVAILABLE = '0';
+  } else {
+    process.env.EMCH_STORAGE_EMULATOR_AVAILABLE = '1';
+  }
 }
 
 export async function teardown() {

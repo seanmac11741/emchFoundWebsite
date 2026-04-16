@@ -42,29 +42,53 @@ const signInBtn = document.getElementById('signInBtn');
 const signOutBtn = document.getElementById('signOutBtn');
 const userDetails = document.getElementById('userDetails');
 
+// Hardcoded admin UID list — kept in sync with firestore.rules and
+// storage.rules. Sufficient for a small, stable admin set.
+const ADMIN_UIDS = [
+    'CYoiZHjZ2beF0ZWUJHr5n9Qq3rz2',
+    'fKO4Sj1dgShfBmC44z0h7zNZ6Ik1',
+];
+
+function isAdmin(user) {
+    return !!user && ADMIN_UIDS.includes(user.uid);
+}
+
+const adminOnly = document.getElementById('adminOnly');
+const onAdminPage = window.location.pathname.includes('admin');
+
 // Handle Auth State Changes. called on page load, so only one call needed for this ever
 onAuthStateChanged(auth, async (user) => {
     console.log("Auth state changed:", user);
-    if (user) {
-        // If on the admin page, check admin access
-        if (window.location.pathname.includes("admin")) {
-            checkAdminAccess(user);
-        }
-        whenSignedIn.hidden = false;
-        whenSignedOut.hidden = true;
-        userDetails.innerHTML = `<h3>Hello ${user.displayName}!</h3><p>Click <a href="admin.html">here</a> to access admin page</p>`;
-        console.log(`User ID: ${user.uid}`);
-    } else {
-        // Redirect unauthorized users trying to access the admin page
-        if (window.location.pathname.includes("admin")) {
+    if (!user) {
+        if (onAdminPage) {
             alert("Access Denied! You are not an admin.");
             window.location.href = "login";
+            return;
         }
         if (whenSignedIn) {
             whenSignedIn.hidden = true;
             whenSignedOut.hidden = false;
             userDetails.innerHTML = '';
         }
+        return;
+    }
+
+    if (onAdminPage && !isAdmin(user)) {
+        alert("Access Denied! You are not an admin.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    if (whenSignedIn) {
+        whenSignedIn.hidden = false;
+        whenSignedOut.hidden = true;
+        userDetails.innerHTML = `<h3>Hello ${user.displayName}!</h3><p>Click <a href="admin.html">here</a> to access admin page</p>`;
+    }
+    console.log(`User ID: ${user.uid}`);
+
+    if (onAdminPage && isAdmin(user)) {
+        if (adminOnly) adminOnly.hidden = false;
+        await setupAdminPage();
     }
 });
 
@@ -171,6 +195,7 @@ async function displayStaffScholarshipCards(type, delButton = false) {
     }
     document.getElementById(cardsDiv).innerHTML = ''; // clear the existing cards
     const collRef = collection(db, 'staffscholarship');
+    // Requires the composite index (type ASC, createdAt DESC) in firestore.indexes.json.
     const q = query(collRef, orderBy("createdAt", "desc"), where("type", "==", type));
     const querySnapshot = await getDocs(q);
 
@@ -402,28 +427,6 @@ async function validateAndSubmit(username, password) {
     }
 };
 
-// Function to check if user is an admin
-async function checkAdminAccess(user) {
-    if (!user) {
-        alert("Access Denied! You are not an admin.");
-        window.location.href = "index.html"; // Redirect if no user
-        return;
-    }
-
-
-    const userRef = doc(db, "users", user.uid);
-    const userDoc = await getDoc(userRef);
-    if (userDoc.exists()) {
-        console.log("Doc data:", userDoc.data());
-    }
-
-    if (userDoc.exists() && userDoc.data().role === "admin") {
-        console.log("Admin access granted");
-    } else {
-        alert("Access Denied! You are not an admin.");
-        window.location.href = "index.html"; // Redirect non-admins
-    }
-};
 
 // Function to delete board member image
 async function DeleteBoardMemImg(imgAltText) {
@@ -1019,8 +1022,8 @@ if (window.location.pathname.includes("admin") || window.location.pathname.inclu
 
 };
 
-//only admin page stuff here 
-if (window.location.pathname.includes("admin")) {
+//only admin page stuff here — called from onAuthStateChanged once admin access is confirmed
+async function setupAdminPage() {
 
     //display the board members
     await displayBoardMembers();

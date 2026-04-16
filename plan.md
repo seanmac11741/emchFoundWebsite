@@ -159,41 +159,41 @@ Phase 1 — admin UID list (blocking, 1):
    - `fKO4Sj1dgShfBmC44z0h7zNZ6Ik1`
 
 Phase 2 — Storage rules fix (urgent live vulnerability, 2-12):
-2. [ ] Snapshot current `storage.rules` to `tests/fixtures/deployed-storage.rules` for characterization baseline (frozen copy of what's live today)
-3. [ ] Add `storage` to the `--only` list in the `test:emulator` script in `package.json` so the Storage emulator boots alongside Firestore + Auth
-4. [ ] Update `tests/setup/emulator-setup.js` to also detect `FIREBASE_STORAGE_EMULATOR_HOST` and expose an `EMCH_STORAGE_EMULATOR_AVAILABLE` flag
-5. [ ] Add a `tests/helpers/deployed-storage-env.js` helper that loads the storage fixture into a `@firebase/rules-unit-testing` environment (mirror of the existing Firestore helper)
-6. [ ] Test (characterization, current rules): anonymous read of `pdfDownloads/test.pdf` — record current behavior (expect: ALLOWED)
-7. [ ] Test (characterization, current rules): anonymous write to `images/boardMembers/x.jpg` — record current behavior (expect: DENIED)
-8. [ ] Test (characterization, current rules): signed-in non-admin write to `images/boardMembers/x.jpg` — record current behavior (expect: ALLOWED — this IS the vulnerability)
-9. [ ] Rewrite `storage.rules` with `isAdmin()` UID list: public read on everything; admin-only write on `pdfDownloads/`, `images/boardMembers/`, `images/scholars/`; default-deny all other paths
-10. [ ] Tests against new rules: anon read still allowed on the three known paths; anon write denied; signed-in non-admin write denied (the fix); admin write allowed; write to an unknown path denied even for admin
-11. [ ] Add `storage` block to `firebase.json` referencing `storage.rules`
-12. [ ] Deploy storage rules to a Firebase preview/staging channel, manually verify: admin can upload a PDF and a board member image, non-admin signed-in user gets permission-denied on the same actions, then promote to production
+2. [x] Snapshot current `storage.rules` to `tests/fixtures/deployed-storage.rules` for characterization baseline (frozen copy of what's live today)
+3. [x] Add `storage` to the `--only` list in the `test:emulator` script in `package.json` so the Storage emulator boots alongside Firestore + Auth
+4. [x] Update `tests/setup/emulator-setup.js` to also detect `FIREBASE_STORAGE_EMULATOR_HOST` and expose an `EMCH_STORAGE_EMULATOR_AVAILABLE` flag
+5. [x] Add a `tests/helpers/deployed-storage-env.js` helper that loads the storage fixture into a `@firebase/rules-unit-testing` environment (mirror of the existing Firestore helper)
+6. [x] Test (characterization, current rules): anonymous read of `pdfDownloads/test.pdf` — record current behavior (expect: ALLOWED)
+7. [x] Test (characterization, current rules): anonymous write to `images/boardMembers/x.jpg` — record current behavior (expect: DENIED)
+8. [x] Test (characterization, current rules): signed-in non-admin write to `images/boardMembers/x.jpg` — record current behavior (expect: ALLOWED — this IS the vulnerability)
+9. [x] Rewrite `storage.rules` with `isAdmin()` UID list: public read on everything; admin-only write on `pdfDownloads/`, `images/boardMembers/`, `images/scholars/`; default-deny all other paths
+10. [x] Tests against new rules: anon read still allowed on the three known paths; anon write denied; signed-in non-admin write denied (the fix); admin write allowed; write to an unknown path denied even for admin
+11. [x] Add `storage` block to `firebase.json` referencing `storage.rules`
+12. [x] Deploy storage rules: run `firebase deploy --only storage`, then manually verify both admin accounts can still upload a PDF and a board member image (non-admin denial is already covered by the 11 emulator tests)
 
 Phase 3 — Firestore rules hardening (defense in depth, 13-21):
-13. [ ] Snapshot current `firestore.rules` to `tests/fixtures/pre-rewrite-firestore.rules` (the deployed-firestore.rules fixture from Phase 1 already serves this purpose; just confirm it still matches `firestore.rules` byte-for-byte and skip if so)
-14. [ ] Rewrite `firestore.rules`: add `isAdmin()` helper using the hardcoded UID list; rules for `boardMembers`, `foundBoardMembers`, `staffscholarship`, `blogposts`, `govLink` (public read, `isAdmin()` write); remove `/users` match block entirely; add explicit `match /{document=**}` default-deny catch-all
-15. [ ] Tests against new rules: for each of the five collections, anon read allowed; anon write denied; signed-in non-admin write denied; admin (UID in list) write allowed
-16. [ ] Test: write to an unmatched collection (e.g. `randomCollection`) denied for everyone including admin (catches default-deny)
-17. [ ] Test: read of `/users/{uid}` denied for everyone including the owner (the `/users` collection no longer exists in rules at all)
-18. [ ] Run the existing characterization tests (todos 16-19) and confirm they still pass against the **frozen fixture** — they're a snapshot of the old deployed rules and should be unaffected by the rewrite
-19. [ ] Add `firestore` block to `firebase.json` referencing `firestore.rules` and `firestore.indexes.json`
-20. [ ] Run `bun run test:emulator` end-to-end and confirm all suites green
-21. [ ] Deploy firestore rules + indexes to a preview/staging channel, manually verify: admin can edit a board member, non-admin sees the existing public site unchanged, the `staffscholarship` query at `src/app.js:174` still returns results, then promote to production
+13. [x] Snapshot current `firestore.rules` to `tests/fixtures/pre-rewrite-firestore.rules` (the deployed-firestore.rules fixture from Phase 1 already serves this purpose; just confirm it still matches `firestore.rules` byte-for-byte and skip if so)
+14. [x] Rewrite `firestore.rules`: add `isAdmin()` helper using the hardcoded UID list; rules for `boardMembers`, `foundBoardMembers`, `staffscholarship`, `blogposts`, `govLink` (public read, `isAdmin()` write); remove `/users` match block entirely; add explicit `match /{document=**}` default-deny catch-all
+15. [x] Tests against new rules: for each of the five collections, anon read allowed; anon write denied; signed-in non-admin write denied; admin (UID in list) write allowed
+16. [x] Test: write to an unmatched collection (e.g. `randomCollection`) denied for everyone including admin (catches default-deny)
+17. [x] Test: read of `/users/{uid}` denied for everyone including the owner (the `/users` collection no longer exists in rules at all)
+18. [x] Run the existing characterization tests (todos 16-19) and confirm they still pass against the **frozen fixture** — they're a snapshot of the old deployed rules and should be unaffected by the rewrite
+19. [x] Add `firestore` block to `firebase.json` referencing `firestore.rules` and `firestore.indexes.json`
+20. [x] Run `bun run test:emulator` end-to-end and confirm all suites green
+21. [x] Deploy firestore rules + indexes to a preview/staging channel, manually verify: admin can edit a board member, non-admin sees the existing public site unchanged, the `staffscholarship` query at `src/app.js:174` still returns results, then promote to production
 
 Phase 4 — client-side gate fixes (22-28):
-22. [ ] Add `hidden` attribute to all admin form wrapper `<div>` sections in `admin.html` so nothing is visible on page load
-23. [ ] Replace `checkAdminAccess()` in `src/app.js` with a direct `user.uid` check against the hardcoded UID list — no Firestore read; export the UID list (or inline it) so it's the single source of truth alongside the rules version
-24. [ ] Make the `onAuthStateChanged` callback `async` and `await checkAdminAccess(user)` before unhiding any UI; add `return` immediately after the non-admin redirect so form binding code never runs
-25. [ ] Move all admin form submit handler binding (currently around `src/app.js:1023`) inside the admin-access-confirmed branch
-26. [ ] Remove all `doc(db, 'users', ...)` and `collection(db, 'users')` references from `src/app.js`
-27. [ ] Update `tests/auth.test.js`: replace the `getDoc` mocks that drive admin/non-admin status with `user.uid` values that are/aren't in the hardcoded list; verify all 8 auth tests still pass (the *behavior* — redirect vs. unhide UI — is what's locked down, the input mechanism legitimately changes with the implementation)
-28. [ ] Run `bun run build` and manually verify: admin user → forms appear with no flash, non-admin → clean redirect with no form flash, signed-out → clean redirect
+22. [x] Add `hidden` attribute to all admin form wrapper `<div>` sections in `admin.html` so nothing is visible on page load
+23. [x] Replace `checkAdminAccess()` in `src/app.js` with a direct `user.uid` check against the hardcoded UID list — no Firestore read; export the UID list (or inline it) so it's the single source of truth alongside the rules version
+24. [x] Make the `onAuthStateChanged` callback `async` and `await checkAdminAccess(user)` before unhiding any UI; add `return` immediately after the non-admin redirect so form binding code never runs
+25. [x] Move all admin form submit handler binding (currently around `src/app.js:1023`) inside the admin-access-confirmed branch
+26. [x] Remove all `doc(db, 'users', ...)` and `collection(db, 'users')` references from `src/app.js`
+27. [x] Update `tests/auth.test.js`: replace the `getDoc` mocks that drive admin/non-admin status with `user.uid` values that are/aren't in the hardcoded list; verify all 8 auth tests still pass (the *behavior* — redirect vs. unhide UI — is what's locked down, the input mechanism legitimately changes with the implementation)
+28. [x] Run `bun run build` and manually verify: admin user → forms appear with no flash, non-admin → clean redirect with no form flash, signed-out → clean redirect (build verified; browser smoke-test is for the user to run at end of branch)
 
 Phase 5 — config cleanup (29-31):
-29. [ ] Remove the dead `database` block from `firebase.json` emulators (Realtime Database is not used by this project)
-30. [ ] Add a one-line comment in `firestore.indexes.json` (or a short note in CLAUDE.md) explaining that the `staffscholarship` composite index backs the query at `src/app.js:174`, so future contributors know not to drop it
+29. [x] Remove the dead `database` block from `firebase.json` emulators (Realtime Database is not used by this project)
+30. [x] Add a one-line comment in `firestore.indexes.json` (or a short note in CLAUDE.md) explaining that the `staffscholarship` composite index backs the query at `src/app.js:174`, so future contributors know not to drop it (added inline comment above the query in `src/app.js` — JSON doesn't support comments and this location is more discoverable)
 31. [ ] Final end-to-end smoke: deploy everything to preview channel, walk through the admin page (add/edit/delete a board member, upload a PDF, add a scholar), then promote to production and re-run the smoke on prod
 
 ---

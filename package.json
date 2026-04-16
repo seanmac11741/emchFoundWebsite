@@ -15,6 +15,6 @@
     "dev": "trap 'kill 0' INT TERM EXIT; webpack --mode=development --watch & firebase serve & wait",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:emulator": "firebase emulators:exec --only firestore,auth \"bun run test\""
+    "test:emulator": "firebase emulators:exec --only firestore,auth,storage \"bun run test\""
   }
 }

@@ -65,4 +65,42 @@ service cloud.firestore {
     expect(pkg.scripts['test:emulator']).toMatch(/firebase\s+emulators:exec/);
     expect(pkg.scripts['test:emulator']).toMatch(/bun run test|vitest/);
   });
+
+  it('has a deployed-storage-env.js helper that exports initDeployedStorageRulesTestEnv', async () => {
+    const helperPath = resolve(repoRoot, 'tests/helpers/deployed-storage-env.js');
+    expect(existsSync(helperPath)).toBe(true);
+    const mod = await import('./helpers/deployed-storage-env.js');
+    expect(typeof mod.initDeployedStorageRulesTestEnv).toBe('function');
+  });
+
+  it('emulator-setup.js references FIREBASE_STORAGE_EMULATOR_HOST', () => {
+    const setupPath = resolve(repoRoot, 'tests/setup/emulator-setup.js');
+    const setupCode = readFileSync(setupPath, 'utf8');
+    expect(setupCode).toMatch(/FIREBASE_STORAGE_EMULATOR_HOST/);
+    expect(setupCode).toMatch(/EMCH_STORAGE_EMULATOR_AVAILABLE/);
+  });
+
+  it('firebase.json has a firestore block referencing firestore.rules and firestore.indexes.json', () => {
+    const firebaseConfig = JSON.parse(
+      readFileSync(resolve(repoRoot, 'firebase.json'), 'utf8'),
+    );
+    expect(firebaseConfig.firestore).toBeDefined();
+    expect(firebaseConfig.firestore.rules).toBe('firestore.rules');
+    expect(firebaseConfig.firestore.indexes).toBe('firestore.indexes.json');
+  });
+
+  it('firebase.json has a storage block referencing storage.rules', () => {
+    const firebaseConfig = JSON.parse(
+      readFileSync(resolve(repoRoot, 'firebase.json'), 'utf8'),
+    );
+    expect(firebaseConfig.storage).toBeDefined();
+    expect(firebaseConfig.storage.rules).toBe('storage.rules');
+  });
+
+  it('test:emulator --only list includes storage alongside firestore and auth', () => {
+    const script = pkg.scripts['test:emulator'];
+    expect(script).toMatch(/--only\s+\S*storage/);
+    expect(script).toMatch(/--only\s+\S*firestore/);
+    expect(script).toMatch(/--only\s+\S*auth/);
+  });
 });
