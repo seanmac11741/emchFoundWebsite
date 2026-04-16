@@ -1,0 +1,27 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.uid == 'CYoiZHjZ2beF0ZWUJHr5n9Qq3rz2' ||
+        request.auth.uid == 'fKO4Sj1dgShfBmC44z0h7zNZ6Ik1'
+      );
+    }
+
+    match /pdfDownloads/{file=**} {
+      allow read;
+      allow write: if isAdmin();
+    }
+
+    match /images/boardMembers/{file=**} {
+      allow read;
+      allow write: if isAdmin();
+    }
+
+    match /images/scholars/{file=**} {
+      allow read;
+      allow write: if isAdmin();
+    }
+  }
+}
