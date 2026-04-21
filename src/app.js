@@ -5,6 +5,7 @@ import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, getDoc, updateDoc, collection, query, orderBy, deleteDoc, getDocs, addDoc, setDoc, where } from "firebase/firestore";
 import { uploadBytesResumable, getStorage, ref, getDownloadURL, deleteObject, listAll } from "firebase/storage";
+import { applyCardsPerRow } from "./cardsPerRow.js";
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCjPEIpk3-MithVHsp3gZt1Dvec-LZ6tIk",
@@ -346,6 +347,8 @@ async function displayFoundBoardMembers() {
 
         cardElement.appendChild(card);
     };
+
+    applyCardsPerRow(document.getElementById('FoundboardMemCards'), querySnapshot.size);
 };
 
 
@@ -395,6 +398,8 @@ async function displayBoardMembers() {
         card.appendChild(dates);
         cardElement.appendChild(card);
     };
+
+    applyCardsPerRow(document.getElementById('boardMemCards'), querySnapshot.size);
 };
 
 async function validateAndSubmit(username, password) {

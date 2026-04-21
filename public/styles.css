@@ -245,30 +245,12 @@ input[type="file"] {
 }
 
 .boardMemCards {
-    display: flex;
+    --cards-per-row: 4;
+    display: grid;
+    grid-template-columns: repeat(var(--cards-per-row), minmax(0, 300px));
     justify-content: center;
-    /* This centers the cards horizontally if they don't all fit in one row */
     gap: 20px;
     padding: 20px;
-    /* Padding around the cards for aesthetics, remove this if you want */
-}
-
-@media screen and (max-width: 750px) {
-
-    /* Adjust this breakpoint as needed */
-    .boardMemCards {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        padding: 20px;
-        flex-wrap: wrap;
-        /* This enables the cards to wrap onto new lines when there is not enough space */
-    }
-
-    .card>* {
-        flex: 1;
-        min-width: 200px;
-    }
 }
 
 .staffScholarshipCards,
@@ -283,12 +265,30 @@ input[type="file"] {
 
 /* FoundboardMemCards */
 .FoundboardMemCards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    --cards-per-row: 4;
+    display: grid;
+    grid-template-columns: repeat(var(--cards-per-row), minmax(0, 300px));
+    justify-content: center;
     gap: 20px;
     padding: 20px;
-    min-width: 200px;
+}
+
+@media screen and (max-width: 750px) and (min-width: 481px) {
+    .boardMemCards,
+    .FoundboardMemCards {
+        grid-template-columns: repeat(var(--cards-per-row-tablet, 2), minmax(0, 300px));
+    }
+
+    .card>* {
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .boardMemCards,
+    .FoundboardMemCards {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* todo make a foundation members card css */
